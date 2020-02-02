@@ -12,5 +12,5 @@ size_t Links::GetLinkCount() {
 
 Link Links::Create() {
     LinkCount++;
-    return Link(LinkCount + 1, LinkCount + 1);
+    return Link(LinkCount, LinkCount);
 }
