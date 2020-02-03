@@ -9,7 +9,7 @@ int main()
     Link *link = links.Create();
     cout << "Link Count: " << links.GetLinkCount() << endl;
     cout << "My first link! (" << link->Source<< " " << link->Target << ")\n";
-    cout << "Link index" << GetIndexByLink(link) << std::endl;
+    cout << "Link index" << links.GetIndexByLink(link) << std::endl;
     links.Close();
     return 0;
 }
