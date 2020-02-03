@@ -5,23 +5,25 @@
 #include <iostream>
 
 
-Link* LinksMap(const char* filename, size_t LinksSize){
+Link* LinksMap::Map(const char* filename){
     try {
-        int fd;
         void* links;
-        if(open(filename, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR) == -1) {
+        FileDescriptor = open(filename, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+        if(FileDescriptor == -1) {
             throw("Linux/linksmap.cpp: OpenFileErrorException");
         }
-        links = mmap(NULL, LinksSize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+        links = mmap(NULL,LinksSize + BlockSize, PROT_READ | PROT_WRITE, MAP_SHARED, FileDescriptor, 0);
         if(links == MAP_FAILED) {
             throw("Linux/linksmap.cpp: MemoryMapErrorException");
         }
+        return (Link*)links;
     }
     catch(char *str) {
-        cout << str << endl;
+        std::cout << str << std::endl;
     }
+    return NULL;
 }
 
-void LinksUnmap(Link* links, size_t LinksSize) {
+void LinksMap::Unmap() {
 
 }

@@ -1,14 +1,13 @@
 #ifndef LINKS_HPP
 #define LINKS_HPP
 #include "link.hpp"
-
+#include "linksmap.hpp"
 
 class Links
 {
 private:
     link_t LinkCount = 0;
-    size_t BlockSize = 1024 * 1024 * 64; // 64MB
-    size_t BlockCount = 1;
+    LinksMap lmap;
     Link *links;
 public:
     Links(const char* dbname);

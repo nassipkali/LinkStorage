@@ -3,7 +3,7 @@
 
 Links::Links(const char* dbname)
 {
-    links = LinksMap(dbname, BlockSize * BlockCount);
+    links = lmap.Map(dbname);
 }
 
 size_t Links::GetLinkCount() {
