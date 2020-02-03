@@ -1,10 +1,10 @@
 #include <iostream>
-#include "links.h"
+#include "Links/links.hpp"
 using namespace std;
 
 int main()
 {
-    Links linkdb("db");
+    Links linkdb("db.links");
     cout << "Hello World!" << endl;
     return 0;
 }
