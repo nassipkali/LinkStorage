@@ -4,7 +4,8 @@ using namespace std;
 
 int main()
 {
-    Links linkdb("db.links");
+    Links links("db.links");
     cout << "Hello World!" << endl;
+    Link link = links.Create();
     return 0;
 }
