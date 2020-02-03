@@ -13,6 +13,7 @@ private:
 public:
     Links(const char* dbname);
     Link* Create();
+    Link* Create(link_t source, link_t target);
     void Close();
     size_t GetLinkCount();
     Link* GetLinkByIndex(link_t index);

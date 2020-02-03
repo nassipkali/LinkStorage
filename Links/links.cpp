@@ -18,6 +18,13 @@ Link* Links::Create() {
     return &links[LinkCount];
 }
 
+Link* Links::Create(link_t source, link_t target) {
+    LinkCount++;
+    links[LinkCount].Source = source;
+    links[LinkCount].Target = target;
+    return &links[LinkCount];
+}
+
 Link* Links::GetLinkByIndex(link_t index) {
     return &links[index];
 }
