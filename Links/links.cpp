@@ -4,6 +4,7 @@
 Links::Links(const char* dbname)
 {
     links = lmap.Map(dbname);
+    LinkCount = (lmap.LinksSize - lmap.BlockSize) / sizeof(Link);
 }
 
 size_t Links::GetLinkCount() {

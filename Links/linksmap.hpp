@@ -17,6 +17,8 @@ public:
 	void* MappedLinks;
 	Link* Map(const char* filename);
 	void Unmap();
+	void Remap();
+	void Close();
 };
 
 #endif

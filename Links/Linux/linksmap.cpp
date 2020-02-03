@@ -41,5 +41,7 @@ Link* LinksMap::Map(const char* filename){
 }
 
 void LinksMap::Unmap() {
-
+    if(munmap(MappedLinks, LinksSize) == -1) {
+        std::cout << "[LinksPlatform] Linux/linksmap.cpp: MemoryMapErrorException, ERRNO: " << errno;
+    }
 }
