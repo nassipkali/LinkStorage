@@ -3,3 +3,5 @@ CMakeCache.txt
 cmake_install.cmake
 LinksPlatform
 Makefile
+Links/libLinks.a
+db.links
