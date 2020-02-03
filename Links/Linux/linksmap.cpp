@@ -49,8 +49,7 @@ void LinksMap::Unmap() {
 
 void LinksMap::ResizeFile(size_t size) {
     if(ftruncate(FileDescriptor, size) == -1) {
-            std::cout << "[LinksPlatform] Linux/linksmap.cpp: FileTruncateErrorException, ERRNO: ";
-            throw(errno);
+            std::cout << "[LinksPlatform] Linux/linksmap.cpp: FileTruncateErrorException, ERRNO: " << errno;
     }
 }
 
