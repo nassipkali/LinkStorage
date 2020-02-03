@@ -59,4 +59,16 @@ void LinksMap::Unmap() {
     UnMapViewOfFile(MappedLinks);
 }
 
+void LinksMap::ResizeFile(size_t size) {
+    ftruncate(FileDescriptor, size)
+}
+
+void LinksMap::Close() {
+    if(CloseHandle(MapFileDescriptor) == 0) {
+        std::cout << "[LinksPlatform] Linux/linksmap.cpp: FileCloseErrorException, ERRNO: " << GetLastError();
+    }
+    if(CloseHandle(FileDescriptor) == 0) {
+        std::cout << "[LinksPlatform] Linux/linksmap.cpp: FileCloseErrorException, ERRNO: " << GetLastError();
+    }
+}
 
