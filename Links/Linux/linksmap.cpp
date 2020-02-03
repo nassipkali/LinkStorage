@@ -10,22 +10,32 @@
 Link* LinksMap::Map(const char* filename){
     try {
         FileDescriptor = open(filename, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+        if(FileDescriptor == -1) {
+            std::cout << "[LinksPlatform] Linux/linksmap.cpp: OpenFileErrorException, ERRNO: ";
+            throw(errno);
+        }
+
         struct stat st;
         if(fstat(FileDescriptor, &st) == -1) {
-            throw("Linux/linksmap.cpp: FileStatErrorException, ERRNO: ", errno);
+            std::cout << "[LinksPlatform] Linux/linksmap.cpp: FileStatErrorException, ERRNO: ";
+            throw(errno);
+        }
+
+        if(ftruncate(FileDescriptor, BlockSize) == -1) {
+            std::cout << "[LinksPlatform] Linux/linksmap.cpp: FileTruncateErrorException, ERRNO: ";
+            throw(errno);
         }
         LinksSize = st.st_size + BlockSize;
-        if(FileDescriptor == -1) {
-            throw("Linux/linksmap.cpp: OpenFileErrorException, ERRNO: ", errno);
-        }
+
         MappedLinks = mmap(NULL,LinksSize, PROT_READ | PROT_WRITE, MAP_SHARED, FileDescriptor, 0);
         if(MappedLinks == MAP_FAILED) {
-            throw("Linux/linksmap.cpp: MemoryMapErrorException, ERRNO: ", errno);
+            std::cout << "[LinksPlatform] Linux/linksmap.cpp: MemoryMapErrorException, ERRNO: ";
+            throw(errno);
         }
         return (Link*)MappedLinks;
     }
-    catch(char *str) {
-        std::cout << str << std::endl;
+    catch(int err) {
+        std::cout << err << std::endl;
     }
     return nullptr;
 }
