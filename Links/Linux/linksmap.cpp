@@ -45,3 +45,9 @@ void LinksMap::Unmap() {
         std::cout << "[LinksPlatform] Linux/linksmap.cpp: MemoryMapErrorException, ERRNO: " << errno;
     }
 }
+
+void LinksMap::Close() {
+    if(close(FileDescriptor) == -1) {
+        std::cout << "[LinksPlatform] Linux/linksmap.cpp: FileCloseErrorException, ERRNO: " << errno;
+    }
+}

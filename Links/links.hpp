@@ -12,6 +12,7 @@ private:
 public:
     Links(const char* dbname);
     Link Create();
+    void Close();
     size_t GetLinkCount();
 };
 

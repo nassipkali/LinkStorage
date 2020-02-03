@@ -18,6 +18,7 @@ public:
 	Link* Map(const char* filename);
 	void Unmap();
 	void Remap();
+	void ResizeFile(link_t size);
 	void Close();
 };
 
