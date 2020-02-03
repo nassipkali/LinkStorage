@@ -18,6 +18,14 @@ Link* Links::Create() {
     return &links[LinkCount];
 }
 
+Link* Links::GetLinkByIndex(link_t index) {
+    return &links[index];
+}
+
+link_t Links::GetIndexByLink(Link* link) {
+    return link - links;
+}
+
 void Links::Close() {
     lmap.Unmap();
     lmap.ResizeFile(LinkCount * sizeof(Link));

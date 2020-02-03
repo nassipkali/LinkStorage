@@ -15,6 +15,8 @@ public:
     Link* Create();
     void Close();
     size_t GetLinkCount();
+    Link* GetLinkByIndex(link_t index);
+    link_t GetIndexByLink(Link* link);
 };
 
 #endif // LINKS_HPP
