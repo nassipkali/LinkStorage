@@ -3,6 +3,7 @@
 #include "link.hpp"
 #include "linksmap.hpp"
 
+
 class Links
 {
 private:
@@ -11,7 +12,7 @@ private:
     Link *links;
 public:
     Links(const char* dbname);
-    Link Create();
+    Link* Create();
     void Close();
     size_t GetLinkCount();
 };

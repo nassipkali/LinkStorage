@@ -2,9 +2,9 @@
 #include <windows.h>
 #include <iostream>
 
-void ftruncate( HANDLE hFile, size_t offset) {
+void ftruncate( HANDLE hFile, size_t size) {
     try {
-        if(!SetFilePointerEx(hFile, offset, nullptr, FILE_BEGIN)) {
+        if(!SetFilePointerEx(hFile, size, nullptr, FILE_BEGIN)) {
             std::cout << "[LinksPlatform] Windows/linksmap.cpp: CreateFileErrorException";
             throw(GetLastError());
         }
@@ -29,15 +29,17 @@ Link* LinksMap::Map(const char* filename){
             std::cout << "[LinksPlatform] Windows/linkmap.cpp: GetFileSizeErrorException";
             throw(GetLastError());
         }
-        ftruncate(hFile, BlockSize);
-        LinksSize = dwFileSize + BlockSize;
-        HANDLE hMapping = CreateFileMapping(hFile, nullptr, PAGE_READWRITE, 0, (DWORD)LinksSize, nullptr);
+
+        MapSize = dwFileSize + BlockSize;
+        ftruncate(hFile, MapSize);
+
+        HANDLE hMapping = CreateFileMapping(hFile, nullptr, PAGE_READWRITE, 0, (DWORD)MapSize, nullptr);
         if(hMapping == nullptr) {
             CloseHandle(hFile);
             std::cout << "[LinksPlatform] Windows/linksmap.cpp: MapViewOfFileErrorException";
             throw(GetLastError());
         }
-        MappedLinks = MapViewOfFile(hMapping, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, (DWORD)LinksSize);
+        MappedLinks = MapViewOfFile(hMapping, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, (DWORD)MapSize);
         if(MappedLinks == nullptr) {
             CloseHandle(hMapping);
             CloseHandle(hFile);

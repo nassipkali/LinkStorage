@@ -21,13 +21,14 @@ Link* LinksMap::Map(const char* filename){
             throw(errno);
         }
 
-        if(ftruncate(FileDescriptor, BlockSize) == -1) {
+        MapSize = st.st_size + BlockSize;
+
+        if(ftruncate(FileDescriptor, MapSize) == -1) {
             std::cout << "[LinksPlatform] Linux/linksmap.cpp: FileTruncateErrorException, ERRNO: ";
             throw(errno);
         }
-        LinksSize = st.st_size + BlockSize;
 
-        MappedLinks = mmap(NULL,LinksSize, PROT_READ | PROT_WRITE, MAP_SHARED, FileDescriptor, 0);
+        MappedLinks = mmap(NULL,MapSize, PROT_READ | PROT_WRITE, MAP_SHARED, FileDescriptor, 0);
         if(MappedLinks == MAP_FAILED) {
             std::cout << "[LinksPlatform] Linux/linksmap.cpp: MemoryMapErrorException, ERRNO: ";
             throw(errno);
@@ -41,8 +42,15 @@ Link* LinksMap::Map(const char* filename){
 }
 
 void LinksMap::Unmap() {
-    if(munmap(MappedLinks, LinksSize) == -1) {
+    if(munmap(MappedLinks, MapSize) == -1) {
         std::cout << "[LinksPlatform] Linux/linksmap.cpp: MemoryMapErrorException, ERRNO: " << errno;
+    }
+}
+
+void LinksMap::ResizeFile(size_t size) {
+    if(ftruncate(FileDescriptor, size) == -1) {
+            std::cout << "[LinksPlatform] Linux/linksmap.cpp: FileTruncateErrorException, ERRNO: ";
+            throw(errno);
     }
 }
 
