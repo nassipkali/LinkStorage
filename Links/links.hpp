@@ -49,7 +49,7 @@ Link* Links::NumberToLink(T num) {
 	}
 	for(int i = SecondIter; i < sizeof(T)*8; i++){
 		if(ExpOfTwo & num) {
-			link = Create(GetIndexByLink(link), ExpOfTwo);
+			link = Create(GetIndexByLink(link), i);
 			std::cout << "Stepen:" << ExpOfTwo << std::endl;
 		}
 		ExpOfTwo = ExpOfTwo << 1;
