@@ -10,14 +10,25 @@ int main(int argc, char* argv[]){
     const char newlink[] = "nl";
     const char getlink[] = "gl";
     const char linkcount[] = "lc";
+    const char hlp[] = "help";
+    const char help[] = "nl (Source index) (Target Index)\n\
+    Creates new link.\n\
+    gl (Link Index)\n\
+    Prints Link Source, Target\n\
+    lc\n\
+    Prints Link Count\n";
+
     while(1) {
         char *answer;
         std::cin >> answer;
         if(strncmp(newlink, answer, sizeof(newlink)) == 0) {
             link_t Source = 0, Target = 0;
             std::cin >> Source >> Target;
-            Link* link = links.Create();
-            std::cout << "Link Created: (" << Target << "," << Source << ") Index: " << links.GetIndexByLink(link);
+            Link* link = links.Create(Source, Target);
+            std::cout << "Link Created: (" << Target << "," << Source << ") Index: " << links.GetIndexByLink(link) << std::endl;
+        }
+        else if(strncmp(hlp, answer, sizeof(hlp)) == 0) {
+            std::cout << help;
         }
         else if(strncmp(getlink, answer, sizeof(getlink)) == 0) {
             link_t index;

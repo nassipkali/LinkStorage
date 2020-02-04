@@ -30,7 +30,7 @@ Link* Links::GetLinkByIndex(link_t index) {
 }
 
 link_t Links::GetIndexByLink(Link* link) {
-    return link - links;
+    return (link - links);
 }
 
 void Links::Close() {
