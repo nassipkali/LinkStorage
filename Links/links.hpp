@@ -11,7 +11,9 @@ private:
     	LinksMemory Memory;
 public:
 	Links(const char* dbname);
+	Links(const char* dbname, size_t BlockSize);
 	Link* Create();
+	Link* Create(link_t target);
 	Link* Create(link_t source, link_t target);
 	void Close();
 	size_t GetLinkCount();
