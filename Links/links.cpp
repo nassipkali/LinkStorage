@@ -1,42 +1,45 @@
 #include "links.hpp"
-#include "linksmap.hpp"
+#include "linksmemory.hpp"
 
 Links::Links(const char* dbname)
 {
-    links = lmap.Map(dbname);
-    LinkCount = (lmap.MapSize - lmap.BlockSize) / sizeof(Link);
+    Memory.Map(dbname);
 }
 
 size_t Links::GetLinkCount() {
-    return LinkCount;
+    return Memory.LinkCount;
 }
 
 Link* Links::Create() {
-    LinkCount++;
-    links[LinkCount].Target = LinkCount;
-    links[LinkCount].Source = LinkCount;
-    return &links[LinkCount];
+    Link* link = Memory.LinkAlloc(1);
+    return link;
 }
 
 Link* Links::Create(link_t source, link_t target) {
-    LinkCount++;
-    links[LinkCount].Source = source;
-    links[LinkCount].Target = target;
-    return &links[LinkCount];
+    Link* link = Memory.LinkAlloc(1);
+    link->Source = source;
+    link->Target = target;
+    return link;
 }
 
 Link* Links::GetLinkByIndex(link_t index) {
-    return &links[index];
+    return &Memory.MappedLinks[index];
 }
 
 link_t Links::GetIndexByLink(Link* link) {
-    return (link - links);
+    return (link - Memory.MappedLinks);
 }
 
 void Links::Close() {
-    lmap.Unmap();
-    lmap.ResizeFile(LinkCount * sizeof(Link));
-    lmap.Close();
+    Memory.Close();
+}
+
+size_t Links::GetMemoryMapSize() {
+    return Memory.MapSize;
+}
+
+size_t Links::GetMemoryUse() {
+    return Memory.MemoryUse;
 }
 
 

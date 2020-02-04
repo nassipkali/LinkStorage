@@ -1,16 +1,14 @@
 #ifndef LINKS_HPP
 #define LINKS_HPP
 #include "link.hpp"
-#include "linksmap.hpp"
+#include "linksmemory.hpp"
 #include <stdint.h>
 #include <iostream>
 
 class Links
 {
 private:
-	link_t LinkCount = 1;
-    	LinksMap lmap;
-    	Link *links;
+    	LinksMemory Memory;
 public:
 	Links(const char* dbname);
 	Link* Create();
@@ -19,6 +17,8 @@ public:
 	size_t GetLinkCount();
 	Link* GetLinkByIndex(link_t index);
 	link_t GetIndexByLink(Link* link);
+	size_t GetMemoryMapSize();
+	size_t GetMemoryUse();
 };
 
 #endif // LINKS_HPP

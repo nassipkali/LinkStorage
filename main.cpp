@@ -3,20 +3,16 @@
 #include "Links/links.hpp"
 
 
+
 int main(int argc, char* argv[]){
     Links links(argv[1]);
     std::cout << "Opened " << argv[1] << std::endl;
-    const char exit[] = "exit";
-    const char newlink[] = "nl";
-    const char getlink[] = "gl";
-    const char linkcount[] = "lc";
-    const char hlp[] = "help";
-    const char help[] = "nl (Source index) (Target Index)\n\
-    Creates new link.\n\
-    gl (Link Index)\n\
-    Prints Link Source, Target\n\
-    lc\n\
-    Prints Link Count\n";
+    char exit[] = "exit";
+    char newlink[] = "nl";
+    char getlink[] = "gl";
+    char linkcount[] = "lc";
+    char mem[] = "mem";
+    char hlp[] = "help";
 
     while(1) {
         char *answer;
@@ -25,10 +21,20 @@ int main(int argc, char* argv[]){
             link_t Source = 0, Target = 0;
             std::cin >> Source >> Target;
             Link* link = links.Create(Source, Target);
-            std::cout << "Link Created: (" << Target << "," << Source << ") Index: " << links.GetIndexByLink(link) << std::endl;
+            std::cout << "Link Created: (" << Source << "," << Target << ") Index: " << links.GetIndexByLink(link) << std::endl;
         }
         else if(strncmp(hlp, answer, sizeof(hlp)) == 0) {
-            std::cout << help;
+            printf("\t\t    nl (Source index) (Target Index)\n\
+                    Creates new link.\n\
+                    gl (Link Index)\n\
+                    Prints Link Source, Target\n\
+                    lc\n\
+                    Prints Link Count\n\
+                    mem\n\
+                    Prints Mapped Memory used/size\n");
+        }
+        else if(strncmp(mem, answer, sizeof(mem)) == 0) {
+            std::cout << "Memory used: " << links.GetMemoryMapSize() << "/" << links.GetMemoryUse() << std::endl;
         }
         else if(strncmp(getlink, answer, sizeof(getlink)) == 0) {
             link_t index;
