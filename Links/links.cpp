@@ -38,3 +38,5 @@ void Links::Close() {
     lmap.ResizeFile(LinkCount * sizeof(Link));
     lmap.Close();
 }
+
+

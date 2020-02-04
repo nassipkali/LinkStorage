@@ -18,7 +18,7 @@ void ftruncate( HANDLE hFile, size_t size) {
 
 Link* LinksMap::Map(const char* filename){
     try {
-        HANDLE hFile = CreateFileA(filename, GENERIC_READ | GENERIC_WRITE, 0, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+        FileDescriptor.hFile = CreateFileA(filename, GENERIC_READ | GENERIC_WRITE, 0, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
         if(hFile == INVALID_HANDLE_VALUE) {
             std::cout << "[LinksPlatform] Windows/linksmap.cpp: CreateFileErrorException";
             throw(GetLastError());
@@ -31,23 +31,22 @@ Link* LinksMap::Map(const char* filename){
         }
 
         MapSize = dwFileSize + BlockSize;
-        ftruncate(hFile, MapSize);
+        ftruncate(FileDescriptor.hFile, MapSize);
 
-        HANDLE hMapping = CreateFileMapping(hFile, nullptr, PAGE_READWRITE, 0, (DWORD)MapSize, nullptr);
-        if(hMapping == nullptr) {
+        FileDescriptor.hMapping = CreateFileMapping(FileDescriptor.hFile, nullptr, PAGE_READWRITE, 0, (DWORD)MapSize, nullptr);
+        if(FileDescriptor.hMapping == nullptr) {
             CloseHandle(hFile);
             std::cout << "[LinksPlatform] Windows/linksmap.cpp: MapViewOfFileErrorException";
             throw(GetLastError());
         }
-        MappedLinks = MapViewOfFile(hMapping, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, (DWORD)MapSize);
+        MappedLinks = MapViewOfFile(FileDescriptor.hMapping, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, (DWORD)MapSize);
         if(MappedLinks == nullptr) {
-            CloseHandle(hMapping);
-            CloseHandle(hFile);
+            CloseHandle(FileDescriptor.hMapping);
+            CloseHandle(FileDescriptor.hFile);
             std::cout << "[LinksPlatform] Windows/linksmap.cpp: MapViewOfFileErrorException";
             throw(GetLastError());
         }
-        FileDescriptor = hFile;
-        FileMapDescriptor = hMapping;
+        return (Link*)MappedLinks;
     }
     catch(DWORD err) {
         std::cout << str << std::endl;
@@ -60,14 +59,14 @@ void LinksMap::Unmap() {
 }
 
 void LinksMap::ResizeFile(size_t size) {
-    ftruncate(FileDescriptor, size)
+    ftruncate(FileDescriptor.hFile, size)
 }
 
 void LinksMap::Close() {
-    if(CloseHandle(MapFileDescriptor) == 0) {
+    if(CloseHandle(FileDescriptor.hMapping) == 0) {
         std::cout << "[LinksPlatform] Linux/linksmap.cpp: FileCloseErrorException, ERRNO: " << GetLastError();
     }
-    if(CloseHandle(FileDescriptor) == 0) {
+    if(CloseHandle(FileDescriptor.hFile) == 0) {
         std::cout << "[LinksPlatform] Linux/linksmap.cpp: FileCloseErrorException, ERRNO: " << GetLastError();
     }
 }
