@@ -101,3 +101,14 @@ Link* LinksMemory::LinkAlloc(size_t count) {
     MemoryUse += sizeof(Link) * count;
     return addr;
 }
+
+void LinksMemory::LinkAllocNoRet(size_t count) {
+    LinkCount += count;
+    MemoryUse += sizeof(Link) * count;
+}
+
+link_t LinksMemory::LinkAllocIndex() {
+    LinkCount++;
+    MemoryUse += sizeof(Link);
+    return LinkCount - 1;
+}

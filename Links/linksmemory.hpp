@@ -20,7 +20,9 @@ public:
 	void Remap();
 	void ResizeFile(size_t size);
 	void Close();
-	Link* LinkAlloc(size_t size);
+	Link* LinkAlloc(size_t count);
+	link_t LinkAllocIndex();
+	void LinkAllocNoRet(size_t count);
 };
 
 

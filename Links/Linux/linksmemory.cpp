@@ -9,7 +9,7 @@
 
 void LinksMemory::ResizeFile(size_t size) {
     if(ftruncate(FileDescriptor, size) == -1) {
-        std::cerr << "[LinksPlatform] Linux/linksmap.cpp: FileTruncateErrorException, ERRNO: " << errno;
+        std::cerr << "[LinksPlatform] Linux/linksmap.cpp: FileTruncateErrorException, ERRNO: " << errno << std::endl;
     }
 }
 
@@ -21,7 +21,6 @@ void LinksMemory::Map(const char* filename){
             std::cerr << "[LinksPlatform] Linux/linksmap.cpp: OpenFileErrorException, ERRNO: ";
             throw(errno);
         }
-
         struct stat st;
         if(fstat(FileDescriptor, &st) == -1) {
             std::cerr << "[LinksPlatform] Linux/linksmap.cpp: FileStatErrorException, ERRNO: ";
@@ -46,13 +45,13 @@ void LinksMemory::Map(const char* filename){
 
 void LinksMemory::Unmap() {
     if(munmap(MappedLinks, MapSize) == -1) {
-        std::cerr << "[LinksPlatform] Linux/linksmap.cpp: MemoryMapErrorException, ERRNO: " << errno;
+        std::cerr << "[LinksPlatform] Linux/linksmap.cpp: MemoryMapErrorException, ERRNO: " << errno << std::endl;
     }
 }
 
 void LinksMemory::Remap() {
     if(mremap(MappedLinks, MapSize, MapSize + BlockSize, 0, 0) == MAP_FAILED) {
-        std::cerr << "[LinksPlatform] Linux/linksmap.cpp: MemoryReMapErrorException, ERRNO: " << errno;
+        std::cerr << "[LinksPlatform] Linux/linksmap.cpp: MemoryReMapErrorException, ERRNO: " << errno << std::endl;
     }
 }
 
@@ -61,7 +60,7 @@ void LinksMemory::Close() {
     ResizeFile(MemoryUse);
     Unmap();
     if(close(FileDescriptor) == -1) {
-        std::cerr << "[LinksPlatform] Linux/linksmap.cpp: FileCloseErrorException, ERRNO: " << errno;
+        std::cerr << "[LinksPlatform] Linux/linksmap.cpp: FileCloseErrorException, ERRNO: " << errno << std::endl;
     }
 }
 
@@ -71,3 +70,16 @@ Link* LinksMemory::LinkAlloc(size_t count) {
     MemoryUse += sizeof(Link) * count;
     return addr;
 }
+
+void LinksMemory::LinkAllocNoRet(size_t count) {
+    LinkCount += count;
+    MemoryUse += sizeof(Link) * count;
+}
+
+link_t LinksMemory::LinkAllocIndex() {
+    LinkCount++;
+    MemoryUse += sizeof(Link);
+    return LinkCount - 1;
+}
+
+

@@ -7,15 +7,18 @@
 int main(int argc, char* argv[]){
     Links links(argv[1]);
     std::cout << "Opened " << argv[1] << std::endl;
+    /*
     char exit[] = "exit";
     char newlink[] = "nl";
+    char numtolink[] = "ntl";
     char getlink[] = "gl";
     char linkcount[] = "lc";
     char mem[] = "mem";
     char hlp[] = "help";
 
+
     while(1) {
-        char *answer;
+        char* answer;
         std::cin >> answer;
         if(strncmp(newlink, answer, sizeof(newlink)) == 0) {
             link_t Source = 0, Target = 0;
@@ -45,10 +48,17 @@ int main(int argc, char* argv[]){
         else if(strncmp(linkcount, answer, sizeof(linkcount)) == 0) {
             std::cout << "Link count: " << links.GetLinkCount() << std::endl;
         }
+        else if(strncmp(numtolink, answer, sizeof(numtolink)) == 0) {
+            int num;
+            std::cin >> num;
+            Link* link = links.NumberToLink(num);
+            std::cout << "Link index: " << links.GetIndexByLink(link) << std::endl;
+        }
         else if(strncmp(exit, answer, sizeof(exit)) == 0) {
             break;
         }
     }
+*/
     links.Close();
     return 0;
 }
