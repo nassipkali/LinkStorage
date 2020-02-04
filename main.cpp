@@ -4,6 +4,7 @@
 const char *exitcmd = "exit";
 const char *newlink = "nl";
 const char *numtolink = "ntl";
+const char *linktonum = "ltn";
 const char *getlink = "gl";
 const char *linkcount = "lc";
 const char *mem = "mem";
@@ -50,6 +51,13 @@ int main(int argc, char* argv[]){
             std::cin >> num;
             Link* link = links.NumberToLink(num);
             std::cout << "Link index: " << links.GetIndexByLink(link) << std::endl;
+        }
+        else if(strncmp(linktonum, answer, sizeof(linktonum)) == 0){
+            link_t index;
+            std::cin >> index;
+            Link* link = links.GetLinkByIndex(index);
+            int num = links.LinkToNumber<int>(link);
+            std::cout << "Number: " << num << std::endl;
         }
         else if(strncmp(exitcmd, answer, sizeof(exitcmd)) == 0) {
             break;

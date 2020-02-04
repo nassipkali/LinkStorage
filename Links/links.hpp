@@ -29,18 +29,19 @@ public:
 	size_t GetMemoryUse();
  	template<typename T>
 	Link* NumberToLink(T num);
+  template<typename T>
+  T LinkToNumber(Link* link);
 };
 
 
 template<typename T>
 Link* Links::NumberToLink(T num) {
-	Link* link = Create(0, 0);
+	Link* link = Create(1, 0);
 	T ExpOfTwo = 1;
 	int SecondIter;
 	for(int i = 0; i < sizeof(T)*8; i++) {
 		if(ExpOfTwo & num) {
 			link->Target = i + 1;
-			std::cout << "Stepen:" << i << std::endl;
 			SecondIter = i + 1;
 			ExpOfTwo = ExpOfTwo << 1;
 			break;
@@ -49,13 +50,27 @@ Link* Links::NumberToLink(T num) {
 	}
 	for(int i = SecondIter; i < sizeof(T)*8; i++){
 		if(ExpOfTwo & num) {
-			link = Create(GetIndexByLink(link), i);
-			std::cout << "Stepen:" << ExpOfTwo << std::endl;
+			link = Create(GetIndexByLink(link), i + 1);
 		}
 		ExpOfTwo = ExpOfTwo << 1;
 	}
 	return link;
 }
 
+template <typename T>
+T Links::LinkToNumber(Link* link) {
+  T num = 0;
+  for(int i = 0; i < 64; i++) {
+    if(link->Source == 1) {
+      num += 1 << link->Target - 1;
+      break;
+    }
+    else {
+      num += 1 << link->Target - 1;
+      link = this->GetLinkByIndex(link->Source);
+    }
+  }
+  return num;
+}
 
 #endif // LINKS_HPP
