@@ -7,14 +7,14 @@
 int main(int argc, char* argv[]){
     Links links(argv[1]);
     std::cout << "Opened " << argv[1] << std::endl;
-    /*
-    char exit[] = "exit";
-    char newlink[] = "nl";
-    char numtolink[] = "ntl";
-    char getlink[] = "gl";
-    char linkcount[] = "lc";
-    char mem[] = "mem";
-    char hlp[] = "help";
+    
+    const char *exit = "exit";
+    const char *newlink = "nl";
+    const char *numtolink = "ntl";
+    const char *getlink = "gl";
+    const char *linkcount = "lc";
+    const char *mem = "mem";
+    const char *hlp = "help";
 
 
     while(1) {
@@ -58,7 +58,7 @@ int main(int argc, char* argv[]){
             break;
         }
     }
-*/
+
     links.Close();
     return 0;
 }
