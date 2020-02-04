@@ -49,7 +49,7 @@ void LinksMap::Map(const char* filename){
         }
     }
     catch(DWORD err) {
-        std::cout << str << std::endl;
+        std::cerr << err << std::endl;
     }
     return nullptr;
 }
@@ -60,7 +60,26 @@ void LinksMap::Unmap() {
 
 void LinksMap::Remap() {
     UnMapViewOfFile(MappedLinks);
-    ftruncate(FileDescriptor.hFile, size)
+    CloseHandle(hMapping);
+    ftruncate(FileDescriptor.hFile, MapSize + BlockSize);
+    FileDescriptor.hMapping = CreateFileMapping(FileDescriptor.hFile, nullptr, PAGE_READWRITE, 0, (DWORD)MapSize, nullptr);
+    try {
+        if(FileDescriptor.hMapping == nullptr) {
+            CloseHandle(hFile);
+            std::cerr << "[LinksPlatform] Windows/linksmap.cpp: MapViewOfFileErrorException. ERRNO:";
+            throw(GetLastError());
+        }
+        MappedLinks = MapViewOfFile(FileDescriptor.hMapping, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, (DWORD)MapSize);
+        if(MappedLinks == nullptr) {
+            CloseHandle(FileDescriptor.hMapping);
+            CloseHandle(FileDescriptor.hFile);
+            std::cerr << "[LinksPlatform] Windows/linksmap.cpp: MapViewOfFileErrorException. ERRNO:";
+            throw(GetLastError());
+        }
+    }
+    catch(DWORD err) {
+        std::cerr << err << std::endl;
+    }
 
 }
 
