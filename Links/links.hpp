@@ -10,11 +10,14 @@
 class Links
 {
 private:
-    	LinksMemory Memory;
-    	void Init();
+    LinksMemory Memory;
+    Link* LinksArray;
+    size_t LinkCount = 0;
+    void Init();
 public:
 	Links(const char* dbname);
 	Links(const char* dbname, size_t BlockSize);
+    Link& operator[] (const link_t index);
 	void CreateNoRet();
 	void CreateNoRet(link_t target);
 	void CreateNoRet(link_t source, link_t target);
@@ -29,8 +32,8 @@ public:
 	size_t GetMemoryUse();
  	template<typename T>
 	Link* NumberToLink(T num);
-  template<typename T>
-  T LinkToNumber(Link* link);
+    template<typename T>
+    T LinkToNumber(Link* link);
 };
 
 
@@ -59,18 +62,18 @@ Link* Links::NumberToLink(T num) {
 
 template <typename T>
 T Links::LinkToNumber(Link* link) {
-  T num = 0;
-  for(int i = 0; i < 64; i++) {
-    if(link->Source == 1) {
-      num += (1 << link->Target) - 1;
-      break;
+    T num = 0;
+    for(int i = 0; i < 64; i++) {
+        if(link->Source == 1) {
+            num += (1 << link->Target) - 1;
+            break;
+        }
+        else {
+            num += (1 << link->Target) - 1;
+            link = this->GetLinkByIndex(link->Source);
+        }
     }
-    else {
-      num += (1 << link->Target) - 1;
-      link = this->GetLinkByIndex(link->Source);
-    }
-  }
-  return num;
+    return num;
 }
 
 #endif // LINKS_HPP

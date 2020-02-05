@@ -10,19 +10,16 @@
 class LinksMemory {
 public:
 	size_t BlockSize = 1024 * 1024 * 16; // 16MB
-    	size_t MapSize = 0;
-    	size_t MemoryUse = 0;
-    	size_t LinkCount = 0;
+    size_t MapSize = 0;
 	fd_t FileDescriptor;
-	Link* MappedLinks;
-	void Map(const char* filename);
+    void* MappedMemory;
+    void* Map(const char* filename);
+    void* Map(fd_t FileDescriptor);
 	void Unmap();
-	void Remap();
+    void* Remap();
+    void ShrinkMap();
 	void ResizeFile(size_t size);
-	void Close();
-	Link* LinkAlloc(size_t count);
-	link_t LinkAllocIndex();
-	void LinkAllocNoRet(size_t count);
+    void Close();
 };
 
 

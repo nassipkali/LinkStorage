@@ -3,49 +3,56 @@
 
 Links::Links(const char* dbname)
 {
-    Memory.Map(dbname);
-    if(!Memory.LinkCount) {
+    LinksArray = (Link*)Memory.Map(dbname);
+    if(!LinksArray[1].Source && LinksArray[1].Target == 1) {
         Init();
     }
 }
 
 Links::Links(const char* dbname, size_t BlockSize) {
     Memory.BlockSize = BlockSize;
-    Memory.Map(dbname);
-    if(!Memory.LinkCount) {
+    LinksArray = (Link*)Memory.Map(dbname);
+    if(LinksArray[1].Source && LinksArray[1].Target == 1) {
         Init();
     }
 }
 
+Link& Links::operator[] (const link_t index) {
+    return LinksArray[index];
+}
+
 size_t Links::GetLinkCount() {
-    return Memory.LinkCount;
+    return LinkCount;
 }
 
 Link* Links::Create() {
-    Link* link = Memory.LinkAlloc(1);
+    LinkCount++;
+    Link* link = &LinksArray[LinkCount];
     return link;
 }
 
 Link* Links::Create(link_t target) {
-    Link* link = Memory.LinkAlloc(1);
-    link->Source = GetIndexByLink(link);
+    LinkCount++;
+    Link* link = &LinksArray[LinkCount];
+    link->Source = LinkCount;
     link->Target = target;
     return link;
 }
 
 Link* Links::Create(link_t source, link_t target) {
-    Link* link = Memory.LinkAlloc(1);
+    LinkCount++;
+    Link* link = &LinksArray[LinkCount];
     link->Source = source;
     link->Target = target;
     return link;
 }
 
 Link* Links::GetLinkByIndex(link_t index) {
-    return &Memory.MappedLinks[index];
+    return &LinksArray[index];
 }
 
 link_t Links::GetIndexByLink(Link* link) {
-    return (link - Memory.MappedLinks);
+    return (link - LinksArray);
 }
 
 void Links::Close() {
@@ -53,8 +60,8 @@ void Links::Close() {
 }
 
 void Links::Init() {
-    Link* zero = Create(0, 0);
-    Link* one = Create(0, 1);
+    CreateNoRet(0, 0);
+    CreateNoRet(0, 1);
     uint64_t ExpOfTwo = 1;
     for(int i = 1; i < 64; i++) {
         CreateNoRet(ExpOfTwo, ExpOfTwo);
@@ -68,21 +75,23 @@ size_t Links::GetMemoryMapSize() {
 }
 
 size_t Links::GetMemoryUse() {
-    return Memory.MemoryUse;
+    return LinkCount * sizeof(Link);
 }
 
 void Links::CreateNoRet() {
-    Memory.LinkAllocNoRet(1);
+    LinkCount++;
 }
 void Links::CreateNoRet(link_t target) {
-    link_t index = Memory.LinkAllocIndex();
-    Memory.MappedLinks[index].Source = index;
-    Memory.MappedLinks[index].Target = target;
+    LinkCount++;
+    link_t index = LinkCount;
+    LinksArray[index].Source = index;
+    LinksArray[index].Target = target;
 }
 void Links::CreateNoRet(link_t source, link_t target) {
-    link_t index = Memory.LinkAllocIndex();
-    Memory.MappedLinks[index].Source = source;
-    Memory.MappedLinks[index].Target = target;
+    LinkCount++;
+    link_t index = LinkCount;
+    LinksArray[index].Source = source;
+    LinksArray[index].Target = target;
 }
 
 
