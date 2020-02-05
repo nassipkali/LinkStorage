@@ -62,11 +62,11 @@ T Links::LinkToNumber(Link* link) {
   T num = 0;
   for(int i = 0; i < 64; i++) {
     if(link->Source == 1) {
-      num += 1 << link->Target - 1;
+      num += (1 << link->Target) - 1;
       break;
     }
     else {
-      num += 1 << link->Target - 1;
+      num += (1 << link->Target) - 1;
       link = this->GetLinkByIndex(link->Source);
     }
   }
