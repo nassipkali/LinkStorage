@@ -13,11 +13,12 @@ private:
     LinksMemory Memory;
     Link* LinksArray;
     size_t LinkCount = 0;
+    size_t* MetaData;
     void Init();
 public:
 	Links(const char* dbname);
 	Links(const char* dbname, size_t BlockSize);
-    Link& operator[] (const link_t index);
+    Link* operator[] (const link_t index);
 	void CreateNoRet();
 	void CreateNoRet(link_t target);
 	void CreateNoRet(link_t source, link_t target);
@@ -65,11 +66,11 @@ T Links::LinkToNumber(Link* link) {
     T num = 0;
     for(int i = 0; i < 64; i++) {
         if(link->Source == 1) {
-            num += (1 << link->Target) - 1;
+            num += 1 << (link->Target - 1);
             break;
         }
         else {
-            num += (1 << link->Target) - 1;
+            num += 1 << (link->Target - 1);
             link = this->GetLinkByIndex(link->Source);
         }
     }

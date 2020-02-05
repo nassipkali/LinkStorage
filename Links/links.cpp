@@ -3,8 +3,10 @@
 
 Links::Links(const char* dbname)
 {
-    LinksArray = (Link*)Memory.Map(dbname);
-    if(!LinksArray[1].Source && LinksArray[1].Target == 1) {
+    MetaData = (size_t*)Memory.Map(dbname);
+    LinkCount = MetaData[0];
+    LinksArray = (Link*)(MetaData + 8);
+    if(LinkCount == 0) {
         Init();
     }
 }
@@ -17,8 +19,8 @@ Links::Links(const char* dbname, size_t BlockSize) {
     }
 }
 
-Link& Links::operator[] (const link_t index) {
-    return LinksArray[index];
+Link* Links::operator[] (const link_t index) {
+    return &LinksArray[index];
 }
 
 size_t Links::GetLinkCount() {
@@ -56,14 +58,14 @@ link_t Links::GetIndexByLink(Link* link) {
 }
 
 void Links::Close() {
+    MetaData[0] = LinkCount;
     Memory.Close();
 }
 
 void Links::Init() {
-    CreateNoRet(0, 0);
     CreateNoRet(0, 1);
     uint64_t ExpOfTwo = 1;
-    for(int i = 1; i < 64; i++) {
+    for(int i = 0; i < 64; i++) {
         CreateNoRet(ExpOfTwo, ExpOfTwo);
         ExpOfTwo *= 2;
     }

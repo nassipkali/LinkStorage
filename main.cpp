@@ -1,14 +1,14 @@
 #include <iostream>
 #include <string.h>
 #include "Links/links.hpp"
-const char *exitcmd = "exit";
-const char *newlink = "nl";
-const char *numtolink = "ntl";
-const char *linktonum = "ltn";
-const char *getlink = "gl";
-const char *linkcount = "lc";
-const char *mem = "mem";
-const char *hlp = "help";
+const char exitcmd[] = "exit";
+const char newlink[] = "nl";
+const char numtolink[] = "ntl";
+const char linktonum[] = "ltn";
+const char getlink[] = "gl";
+const char linkcount[] = "lc";
+const char mem[] = "mem";
+const char hlp[] = "help";
 
 int main(int argc, char* argv[]){
     Links links(argv[1]);
@@ -55,7 +55,7 @@ int main(int argc, char* argv[]){
         else if(strncmp(linktonum, answer, sizeof(linktonum)) == 0){
             link_t index;
             std::cin >> index;
-            Link* link = links.GetLinkByIndex(index);
+            Link* link = links[index];
             int num = links.LinkToNumber<int>(link);
             std::cout << "Number: " << num << std::endl;
         }
