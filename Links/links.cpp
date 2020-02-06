@@ -5,6 +5,9 @@ Links::Links(const char* dbname)
 {
     MetaData = (size_t*)Memory.Map(dbname);
     LinkCount = MetaData[0];
+    IndexTreeRoot = MetaData[1];
+    DeletedList = MetaData[2];
+    FreeLinkCount = MetaData[3];
     LinksArray = (Link*)(MetaData + 8);
     if(LinkCount == 0) {
         Init();
@@ -29,6 +32,10 @@ size_t Links::GetLinkCount() {
 
 Link* Links::Create() {
     LinkCount++;
+    if(FreeLinkCount > 0) {
+        Link* link = &LinksArray[DeletedList];
+        DeletedList = LinksArray[DeletedList].Source;
+    }
     Link* link = &LinksArray[LinkCount];
     return link;
 }
@@ -49,6 +56,21 @@ Link* Links::Create(link_t source, link_t target) {
     return link;
 }
 
+void Links::Delete(link_t index) {
+    FreeLinkCount++;
+    LinksArray[DeletedList].Target = index;
+    LinksArray[index].Source = DeletedList;
+    DeletedList = index;
+}
+
+void Links::Delete(Link* link) {
+    FreeLinkCount++;
+    link_t index = GetIndexByLink(link);
+    LinksArray[DeletedList].Target = index;
+    link->Source = DeletedList;
+    DeletedList = index;
+}
+
 Link* Links::GetLinkByIndex(link_t index) {
     return &LinksArray[index];
 }
@@ -59,6 +81,10 @@ link_t Links::GetIndexByLink(Link* link) {
 
 void Links::Close() {
     MetaData[0] = LinkCount;
+    MetaData[1] = NumberTreeRoot;
+    MetaData[2] = IndexTreeRoot;
+    MetaData[3] = DeletedList;
+    MetaData[4] = FreeLinkCount;
     Memory.Close();
 }
 

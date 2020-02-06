@@ -13,6 +13,10 @@ private:
     LinksMemory Memory;
     Link* LinksArray;
     size_t LinkCount = 0;
+	link_t NumberTreeRoot;
+    link_t IndexTreeRoot;
+    link_t DeletedList;
+    link_t FreeLinkCount = 0;
     size_t* MetaData;
     void Init();
 public:
@@ -25,6 +29,8 @@ public:
 	Link* Create();
 	Link* Create(link_t target);
 	Link* Create(link_t source, link_t target);
+	void Delete(link_t index);
+	void Delete(Link* link);
 	void Close();
 	size_t GetLinkCount();
 	Link* GetLinkByIndex(link_t index);
@@ -66,12 +72,12 @@ T Links::LinkToNumber(Link* link) {
     T num = 0;
     for(int i = 0; i < 64; i++) {
         if(link->Source == 1) {
-            num += 1 << (link->Target - 1);
+            num ^= 1 << (link->Target - 1);
             break;
         }
         else {
-            num += 1 << (link->Target - 1);
-            link = this->GetLinkByIndex(link->Source);
+            num ^= 1 << (link->Target - 1);
+            link = GetLinkByIndex(link->Source);
         }
     }
     return num;
