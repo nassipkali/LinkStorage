@@ -9,6 +9,8 @@ const char getlink[] = "gl";
 const char linkcount[] = "lc";
 const char mem[] = "mem";
 const char hlp[] = "help";
+const char del[] = "dl";
+const char delseq[] = "ds";
 
 int main(int argc, char* argv[]){
     Links links(argv[1]);
@@ -21,7 +23,7 @@ int main(int argc, char* argv[]){
         if(strncmp(newlink, answer, sizeof(newlink)) == 0) {
             link_t Source = 0, Target = 0;
             std::cin >> Source >> Target;
-            Link* link = links.Create(Source, Target);
+            Link* link = links.CreateLink(Source, Target);
             std::cout << "Link Created: (" << Source << "," << Target << ") Index: " << links.GetIndexByLink(link) << std::endl;
         }
         else if(strncmp(hlp, answer, sizeof(hlp)) == 0) {
@@ -42,9 +44,11 @@ int main(int argc, char* argv[]){
             std::cin >> index;
             Link *link = links.GetLinkByIndex(index);
             std::cout << index << ": " << link->Source << " " << link->Target << std::endl;
+            std::cout << "LeftAsSource: " << link->LeftAsSource << " RightAsSource: " << link->LeftAsSource << " SizeAsSource: " << link->SizeAsSource << std::endl;
+            std::cout << "LeftAsTarget: " << link->LeftAsTarget << " RightAsTarget: " << link->LeftAsTarget << " SizeAsSource: " << link->SizeAsTarget << std::endl;
         }
         else if(strncmp(linkcount, answer, sizeof(linkcount)) == 0) {
-            std::cout << "Link count: " << links.GetLinkCount() << std::endl;
+            std::cout << "Link count: " << links.GetAllocatedLinksCount() << std::endl;
         }
         else if(strncmp(numtolink, answer, sizeof(numtolink)) == 0) {
             int num;
@@ -58,6 +62,18 @@ int main(int argc, char* argv[]){
             Link* link = links[index];
             int num = links.LinkToNumber<int>(link);
             std::cout << "Number: " << num << std::endl;
+        }
+        else if(strncmp(del, answer, sizeof(del)) == 0) {
+            link_t index;
+            std::cin >> index;
+            links.Delete(index);
+            std::cout << "Free count: " << links.GetFreeLinksCount() << std::endl;
+        }
+        else if(strncmp(delseq, answer, sizeof(delseq)) == 0) {
+            link_t index;
+            std::cin >> index;
+            links.DeleteSequence(index);
+            std::cout << "Free count: " << links.GetFreeLinksCount() << std::endl;
         }
         else if(strncmp(exitcmd, answer, sizeof(exitcmd)) == 0) {
             break;

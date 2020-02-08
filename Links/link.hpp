@@ -10,6 +10,12 @@ class Link
 public:
     link_t Source;
     link_t Target;
+    link_t LeftAsSource;
+    link_t RightAsSource;
+    link_t SizeAsSource;
+    link_t LeftAsTarget;
+    link_t RightAsTarget;
+    link_t SizeAsTarget;
     Link(link_t source, link_t target);
 };
 #endif
