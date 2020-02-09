@@ -4,6 +4,7 @@
 #include "linksmemory.hpp"
 #include <stdint.h>
 #include <iostream>
+#include <stack>
 
 
 
@@ -55,6 +56,12 @@ public:
 	Link* NumberToLink(T num);
     template<typename T>
     T LinkToNumber(Link* link);
+    template<typename T>
+    Link* ArrayToSequence(T *array, size_t size);
+    template<typename T>
+    T* SequenceToArray(Link* link);
+    template<typename T>
+    T* SequenceToArray(link_t index);
 };
 
 
@@ -85,21 +92,49 @@ template <typename T>
 T Links::LinkToNumber(Link* link) {
     T num = 0;
     for(int i = 0; i < 64; i++) {
-        if(link->Source == 1) {
-            num ^= 1 << (link->Target - 1);
-            break;
+        num ^= 1 << (link->Target - 1);
+        if(link->Source != 0) {
+            link = this->GetLinkByIndex(link->Source);
         }
         else {
-            num ^= 1 << (link->Target - 1);
-            if(link->Source != 0) {
-                link = this->GetLinkByIndex(link->Source);
-            }
-            else {
-                return num;
-            }
+            return num;
         }
     }
     return num;
 }
+
+template <typename T>
+Link* Links::ArrayToSequence ( T* array, size_t size) {
+    Link* rootLink = CreateLink(0, 0);
+    Link* link = NumberToLink(array[0]);
+    rootLink->Target = GetIndexByLink(link);
+    for(int i = 1; i < size; i++) {
+        link = NumberToLink(array[i]);
+        rootLink = CreateLink(GetIndexByLink(rootLink), GetIndexByLink(link));
+    }
+    return rootLink;
+}
+
+template <typename T>
+T* Links::SequenceToArray(Link* link) {
+    std::stack <T> seqStack;
+    while(1) {
+        seqStack.push(LinkToNumber<T>(GetLinkByIndex(link->Target)));
+        if(link->Source == 0) {
+            break;
+        }
+        else {
+            link = GetLinkByIndex(link->Source);
+        }
+    }
+    auto size = seqStack.size();
+    T* array = (T*)malloc(sizeof(T) * size);
+    for(int i = 0; i < size; i++) {
+            array[i] = seqStack.top();
+            seqStack.pop();
+    }
+    return array;
+}
+
 
 #endif // LINKS_HPP

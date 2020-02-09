@@ -11,6 +11,8 @@ const char mem[] = "mem";
 const char hlp[] = "help";
 const char del[] = "dl";
 const char delseq[] = "ds";
+const char strtolink[] = "stl";
+const char linktostr[] = "lts";
 
 int main(int argc, char* argv[]){
     Links links(argv[1]);
@@ -74,6 +76,23 @@ int main(int argc, char* argv[]){
             std::cin >> index;
             links.DeleteSequence(index);
             std::cout << "Free count: " << links.GetFreeLinksCount() << std::endl;
+        }
+        else if(strncmp(strtolink, answer, sizeof(strtolink)) == 0) {
+            char *str = (char*)malloc(sizeof(char) * 100);
+            std::cin >> str;
+            std::cout << "stroka: " << str << std::endl;
+            Link* link = links.ArrayToSequence(str, strlen(str) + 1);
+            std::cout << "String index: " << links.GetIndexByLink(link) << std::endl;
+        }
+        else if(strncmp(linktostr, answer, sizeof(linktostr)) == 0) {
+            link_t index;
+            std::cin >> index;
+            char *str = nullptr;
+            Link* link = links.GetLinkByIndex(index);
+            str = links.SequenceToArray<char>(link);
+            std::cout << "String:";
+            printf("%s", str);
+            std::cout << std::endl;
         }
         else if(strncmp(exitcmd, answer, sizeof(exitcmd)) == 0) {
             break;
