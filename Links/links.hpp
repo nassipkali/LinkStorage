@@ -50,8 +50,13 @@ public:
 	link_t GetIndexByLink(Link* link);
 	size_t GetMemoryMapSize();
 	size_t GetMemoryUse();
-    link_t Search(link_t Source, link_t Target);
-    Link* SearchLink(link_t Source, link_t Target);
+    link_t SearchInSourceTree(link_t source, link_t target);
+    link_t SearchInTargetTree(link_t source, link_t target);
+    Link* SearchLink(link_t source, link_t target);
+    void SourceLeftRotate(Link* link);
+    void SourceRightRotate(Link* link);
+    void TargetLeftRotate(Link* link);
+    void TargetRightRotate(Link* link);
  	template<typename T>
 	Link* NumberToLink(T num);
     template<typename T>
