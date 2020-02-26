@@ -38,10 +38,6 @@ public:
     void DeleteSequence(Link* link);
     void UpdateLink(Link* link, link_t source, link_t target);
     void UpdateLink(link_t linkindex, link_t source, link_t target);
-    void InsertToSourceTree(link_t index);
-    void InsertToSourceTree(Link* link);
-    void InsertToTargetTree(link_t index);
-    void InsertToTargetTree(Link* link);
 	void Close();
 	size_t GetAllocatedLinksCount();
     size_t GetReservedLinksCount();
@@ -50,13 +46,10 @@ public:
 	link_t GetIndexByLink(Link* link);
 	size_t GetMemoryMapSize();
 	size_t GetMemoryUse();
-    link_t SearchInSourceTree(link_t source, link_t target);
-    link_t SearchInTargetTree(link_t source, link_t target);
-    Link* SearchLink(link_t source, link_t target);
-    void SourceLeftRotate(Link* link);
-    void SourceRightRotate(Link* link);
-    void TargetLeftRotate(Link* link);
-    void TargetRightRotate(Link* link);
+    link_t InsertLinkBySource(link_t index);
+    link_t InsertLinkByTarget(link_t index);
+    link_t SearchLinkBySource(link_t Source, link_t Target);
+    link_t SearchLinkByTarget(link_t Source, link_t Target);
  	template<typename T>
 	Link* NumberToLink(T num);
     template<typename T>
