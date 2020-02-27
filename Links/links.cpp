@@ -305,7 +305,6 @@ Link* Links::BalanceBySource(Link* node) {
 Link* Links::InsertLinkBySource(Link* link) {
     link_t index = GetIndexByLink(link);
     Link* sourceLink = GetLinkByIndex(link->Source);
-    std::cout << "Src blyat: " << link->Source;
     link_t rootIndex = sourceLink->RootAsSource;
     Link* rootAsSource = GetLinkByIndex(rootIndex);
     Link* currentNode = rootAsSource;
@@ -442,11 +441,12 @@ Link* Links::BalanceByTarget(Link* node) {
 }
 
 Link* Links::InsertLinkByTarget(Link* link) {
-    Link* sourceLink = GetLinkByIndex(link->Target);
-    link_t rootIndex = sourceLink->RootAsTarget;
+    link_t index = GetIndexByLink(link);
+    Link* targetLink = GetLinkByIndex(link->Target);
+    link_t rootIndex = targetLink->RootAsTarget;
     Link* rootAsTarget = GetLinkByIndex(rootIndex);
+    Link* currentNode = rootAsTarget;
     if(rootIndex != 0) {
-        Link* currentNode = rootAsTarget;
         while(true) {
             if(currentNode->Source > link->Source) {
                 if(currentNode->LeftAsTarget == 0) {
@@ -476,19 +476,19 @@ Link* Links::InsertLinkByTarget(Link* link) {
         }
     }
     else {
-        sourceLink->RootAsTarget = GetIndexByLink(link);
+        targetLink->RootAsTarget = GetIndexByLink(link);
         rootAsTarget->SizeAsTarget++;
         return rootAsTarget;
     }
 }
 
 Link* Links::SearchLinkByTarget(link_t source, link_t target) {
-    Link* sourceLink = GetLinkByIndex(source);
-    Link* rootAsTarget = GetLinkByIndex(sourceLink->RootAsTarget);
+    Link* targetLink = GetLinkByIndex(target);
+    Link* rootAsTarget = GetLinkByIndex(targetLink->RootAsTarget);
     if(rootAsTarget != 0) {
         Link* currentNode = rootAsTarget;
         while(true) {
-            if(currentNode->Source > source) {
+            if(currentNode->Target > target) {
                 if(currentNode->LeftAsTarget == 0) {
                     return nullptr;
                     std::cout << "[LinksPlatform] Link not found" << std::endl;
@@ -499,7 +499,7 @@ Link* Links::SearchLinkByTarget(link_t source, link_t target) {
                     continue;
                 }
             }
-            else if(currentNode->Source < source) {
+            else if(currentNode->Target < target) {
                 if(currentNode->RightAsTarget == 0) {
                     return nullptr;
                     std::cout <<"[LinksPlatform] Link not found" << std::endl;
