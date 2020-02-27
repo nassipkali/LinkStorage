@@ -47,6 +47,16 @@ Link* Links::CreateLink() {
         link = &LinksArray[AllocatedLinks];
         AllocatedLinks++;
     }
+    link->LeftAsSource = 0;
+    link->LeftAsTarget = 0;
+    link->RightAsSource = 0;
+    link->RightAsTarget = 0;
+    link->RootAsSource = 0;
+    link->RootAsTarget = 0;
+    link->SizeAsSource = 0;
+    link->SizeAsTarget = 0;
+    InsertLinkBySource(link);
+    InsertLinkByTarget(link);
     return link;
 }
 
@@ -62,6 +72,16 @@ Link* Links::CreateLink(link_t target) {
     }
     link->Source = AllocatedLinks;
     link->Target = target;
+    link->LeftAsSource = 0;
+    link->LeftAsTarget = 0;
+    link->RightAsSource = 0;
+    link->RightAsTarget = 0;
+    link->RootAsSource = 0;
+    link->RootAsTarget = 0;
+    link->SizeAsSource = 0;
+    link->SizeAsTarget = 0;
+    InsertLinkBySource(link);
+    InsertLinkByTarget(link);
     return link;
 }
 
@@ -77,6 +97,16 @@ Link* Links::CreateLink(link_t source, link_t target) {
     }
     link->Source = source;
     link->Target = target;
+    link->LeftAsSource = 0;
+    link->LeftAsTarget = 0;
+    link->RightAsSource = 0;
+    link->RightAsTarget = 0;
+    link->RootAsSource = 0;
+    link->RootAsTarget = 0;
+    link->SizeAsSource = 0;
+    link->SizeAsTarget = 0;
+    InsertLinkBySource(link);
+    InsertLinkByTarget(link);
     return link;
 }
 
@@ -147,9 +177,6 @@ void Links::DeleteSequence(Link* link) {
 
 
 Link* Links::GetLinkByIndex(link_t index) {
-    if(!index) {
-        return nullptr;
-    }
     return &LinksArray[index];
 }
 
@@ -188,20 +215,37 @@ size_t Links::GetMemoryUse() {
     return AllocatedLinks * sizeof(Link);
 }
 
-void Links::Create() {
-    AllocatedLinks++;
-}
 void Links::Create(link_t target) {
     AllocatedLinks++;
     link_t index = AllocatedLinks;
     LinksArray[index].Source = index;
     LinksArray[index].Target = target;
+    LinksArray[index].LeftAsSource = 0;
+    LinksArray[index].LeftAsTarget = 0;
+    LinksArray[index].RightAsSource = 0;
+    LinksArray[index].RightAsTarget = 0;
+    LinksArray[index].RootAsSource = 0;
+    LinksArray[index].RootAsTarget = 0;
+    LinksArray[index].SizeAsSource = 0;
+    LinksArray[index].SizeAsTarget = 0;
+    InsertLinkBySource(GetLinkByIndex(index));
+    InsertLinkByTarget(GetLinkByIndex(index));
 }
 void Links::Create(link_t source, link_t target) {
     AllocatedLinks++;
     link_t index = AllocatedLinks;
     LinksArray[index].Source = source;
     LinksArray[index].Target = target;
+    LinksArray[index].LeftAsSource = 0;
+    LinksArray[index].LeftAsTarget = 0;
+    LinksArray[index].RightAsSource = 0;
+    LinksArray[index].RightAsTarget = 0;
+    LinksArray[index].RootAsSource = 0;
+    LinksArray[index].RootAsTarget = 0;
+    LinksArray[index].SizeAsSource = 0;
+    LinksArray[index].SizeAsTarget = 0;
+    InsertLinkBySource(GetLinkByIndex(index));
+    InsertLinkByTarget(GetLinkByIndex(index));
 }
 
 link_t Links::BFactorBySource(Link* node) {
@@ -259,10 +303,14 @@ Link* Links::BalanceBySource(Link* node) {
 }
 
 Link* Links::InsertLinkBySource(Link* link) {
+    link_t index = GetIndexByLink(link);
     Link* sourceLink = GetLinkByIndex(link->Source);
-    Link* rootAsSource = GetLinkByIndex(sourceLink->RootAsSource);
-    if(rootAsSource != 0) {
-        Link* currentNode = rootAsSource;
+    std::cout << "Src blyat: " << link->Source;
+    link_t rootIndex = sourceLink->RootAsSource;
+    Link* rootAsSource = GetLinkByIndex(rootIndex);
+    Link* currentNode = rootAsSource;
+    if(rootIndex != 0) {
+
         while(true) {
             if(currentNode->Target > link->Target) {
                 if(currentNode->LeftAsSource == 0) {
@@ -395,8 +443,9 @@ Link* Links::BalanceByTarget(Link* node) {
 
 Link* Links::InsertLinkByTarget(Link* link) {
     Link* sourceLink = GetLinkByIndex(link->Target);
-    Link* rootAsTarget = GetLinkByIndex(sourceLink->RootAsTarget);
-    if(rootAsTarget != 0) {
+    link_t rootIndex = sourceLink->RootAsTarget;
+    Link* rootAsTarget = GetLinkByIndex(rootIndex);
+    if(rootIndex != 0) {
         Link* currentNode = rootAsTarget;
         while(true) {
             if(currentNode->Source > link->Source) {
@@ -442,7 +491,7 @@ Link* Links::SearchLinkByTarget(link_t source, link_t target) {
             if(currentNode->Source > source) {
                 if(currentNode->LeftAsTarget == 0) {
                     return nullptr;
-                    std::cout << "LinksPlatform] Link not found" << std::endl;
+                    std::cout << "[LinksPlatform] Link not found" << std::endl;
                     break;
                 }
                 else {

@@ -13,7 +13,8 @@ const char del[] = "dl";
 const char delseq[] = "ds";
 const char strtolink[] = "stl";
 const char linktostr[] = "lts";
-
+const char searchBySrc[] = "sbs";
+const char searchByTrg[] = "sbt";
 int main(int argc, char* argv[]){
     Links links(argv[1]);
     std::cout << "Opened " << argv[1] << std::endl;
@@ -93,6 +94,18 @@ int main(int argc, char* argv[]){
             std::cout << "String:";
             printf("%s", str);
             std::cout << std::endl;
+        }
+        else if(strncmp(searchBySrc, answer, sizeof(searchBySrc)) == 0) {
+            link_t source, target;
+            std::cin >> source >> target;
+            Link* link = links.SearchLinkBySource(source, target);
+            std::cout << "Link index: " << links.GetIndexByLink(link) << std::endl; 
+        }
+        else if(strncmp(searchByTrg, answer, sizeof(searchByTrg)) == 0) {
+            link_t source, target;
+            std::cin >> source >> target;
+            Link* link = links.SearchLinkByTarget(source, target);
+            std::cout << "Link index: " << links.GetIndexByLink(link) << std::endl;
         }
         else if(strncmp(exitcmd, answer, sizeof(exitcmd)) == 0) {
             break;
