@@ -204,6 +204,131 @@ void Links::Create(link_t source, link_t target) {
     LinksArray[index].Target = target;
 }
 
+link_t Links::BFactorBySource(Link* node) {
+    return GetLinkByIndex(node->RightAsSource)->SizeAsSource - GetLinkByIndex(node->LeftAsSource)->SizeAsSource;
+}
+
+void Links::FixSizeBySource(Link* node) {
+    node->SizeAsSource = 0;
+    if(node->LeftAsSource) {
+        node->SizeAsSource = GetLinkByIndex(node->LeftAsSource)->SizeAsSource; 
+    }
+    if(node->RightAsSource) {
+        node->SizeAsSource += GetLinkByIndex(node->RightAsSource)->SizeAsSource;
+    }
+}
+
+Link* Links::LeftRotateBySource(Link* mNode) {
+    Link* sNode = GetLinkByIndex(mNode->RightAsSource);
+    mNode->RightAsSource = sNode->LeftAsSource; 
+    sNode->LeftAsSource = GetIndexByLink(mNode);
+    FixSizeBySource(mNode);
+    FixSizeBySource(sNode);
+    return sNode;
+}
+
+Link* Links::RightRotateBySource(Link* mNode) {
+    Link* sNode = GetLinkByIndex(mNode->RightAsSource);
+    mNode->LeftAsSource = sNode->RightAsSource;
+    sNode->LeftAsSource = GetIndexByLink(mNode);
+    FixSizeBySource(mNode);
+    FixSizeBySource(sNode);
+    return sNode;
+}
 
 
+Link* Links::BalanceBySource(Link* node) {
+    FixSizeBySource(node);
+    if(BFactorBySource(node) == 2) {
+        if(BFactorBySource(GetLinkByIndex(node->RightAsSource)) < 0) {
+            node->RightAsSource = GetIndexByLink(
+                    RightRotateBySource(
+                        GetLinkByIndex(node->RightAsSource)));
+        }
+        return LeftRotateBySource(node);
+    }
+    if(BFactorBySource(node) == -2) {
+        if(BFactorBySource(GetLinkByIndex(node->LeftAsSource)) > 0) {
+            node->LeftAsSource = GetIndexByLink(
+                    RightRotateBySource(
+                        GetLinkByIndex(node->LeftAsSource)));
+        }
+        return RightRotateBySource(node);
+    }
+}
+
+Link* Links::InsertLinkBySource(Link* link) {
+    Link* sourceLink = GetLinkByIndex(link->Source);
+    Link* rootAsSource = GetLinkByIndex(sourceLink->RootAsSource);
+    if(rootAsSource != 0) {
+        Link* currentNode = rootAsSource;
+        while(true) {
+            if(currentNode->Target > link->Target) {
+                if(currentNode->LeftAsSource == 0) {
+                    currentNode->LeftAsSource = GetIndexByLink(link);
+                    currentNode->SizeAsSource++;
+                    return BalanceBySource(currentNode);
+                }
+                else {
+                    currentNode = GetLinkByIndex(currentNode->LeftAsSource);
+                    continue;
+                }
+            }
+            else if(currentNode->Target < link->Target){
+                if(currentNode->RightAsSource == 0) {
+                    currentNode->RightAsSource = GetIndexByLink(link);
+                    currentNode->SizeAsSource++;
+                    return BalanceBySource(currentNode);
+                }
+                else {
+                    currentNode = GetLinkByIndex(currentNode->RightAsSource);
+                    continue;
+                }
+            }
+            else {
+                return currentNode;
+            }
+        }
+    }
+    else {
+        sourceLink->RootAsSource = GetIndexByLink(link);
+        rootAsSource->SizeAsSource++;
+        return rootAsSource;
+    }
+}
+
+Link* Links::SearchLinkBySource(link_t source, link_t target) {
+    Link* sourceLink = GetLinkByIndex(source);
+    Link* rootAsSource = GetLinkByIndex(sourceLink->RootAsSource);
+    if(rootAsSource != 0) {
+        Link* currentNode = rootAsSource;
+        while(true) {
+            if(currentNode->Target > target) {
+                if(currentNode->LeftAsSource == 0) {
+                    break;
+                }
+                else {
+                    currentNode = GetLinkByIndex(currentNode->LeftAsSource);
+                    continue;
+                }
+            }
+            else if(currentNode->Target < target) {
+                if(currentNode->RightAsSource == 0) {
+                    break;
+                }
+                else {
+                    currentNode = GetLinkByIndex(currentNode->RightAsSource);
+                    continue;
+                }
+            }
+            else {
+                return currentNode;
+            }
+        }
+    }
+    else {
+        return nullptr;
+        std::cout << "[LinksPlatform] Link not found" << std::endl;
+    }
+}
 

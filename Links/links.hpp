@@ -46,10 +46,20 @@ public:
 	link_t GetIndexByLink(Link* link);
 	size_t GetMemoryMapSize();
 	size_t GetMemoryUse();
-    link_t InsertLinkBySource(link_t index);
-    link_t InsertLinkByTarget(link_t index);
-    link_t SearchLinkBySource(link_t Source, link_t Target);
-    link_t SearchLinkByTarget(link_t Source, link_t Target);
+    link_t BFactorBySource(Link* node);
+    link_t BFactorByTarget(Link* node);
+    void FixSizeBySource(Link* node);
+    void FixSizeByTarget(Link* node);
+    Link* LeftRotateBySource(Link* node);
+    Link* RightRotateBySource(Link* node);
+    Link* LeftRotateByTarget(Link* node);
+    Link* RightRotateByTarget(Link* node);
+    Link* BalanceBySource(Link* node);
+    Link* BalanceByTarget(Link* node);
+    Link* InsertLinkBySource(Link* node);
+    Link* InsertLinkByTarget(Link* node);
+    Link* SearchLinkBySource(link_t Source, link_t Target);
+    Link* SearchLinkByTarget(link_t Source, link_t Target);
  	template<typename T>
 	Link* NumberToLink(T num);
     template<typename T>
