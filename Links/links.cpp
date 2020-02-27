@@ -255,6 +255,7 @@ Link* Links::BalanceBySource(Link* node) {
         }
         return RightRotateBySource(node);
     }
+    return node;
 }
 
 Link* Links::InsertLinkBySource(Link* link) {
@@ -305,6 +306,8 @@ Link* Links::SearchLinkBySource(link_t source, link_t target) {
         while(true) {
             if(currentNode->Target > target) {
                 if(currentNode->LeftAsSource == 0) {
+                    return nullptr;
+                    std::cout << "LinksPlatform] Link not found" << std::endl;
                     break;
                 }
                 else {
@@ -314,6 +317,8 @@ Link* Links::SearchLinkBySource(link_t source, link_t target) {
             }
             else if(currentNode->Target < target) {
                 if(currentNode->RightAsSource == 0) {
+                    return nullptr;
+                    std::cout <<"[LinksPlatform] Link not found" << std::endl;
                     break;
                 }
                 else {
@@ -332,3 +337,137 @@ Link* Links::SearchLinkBySource(link_t source, link_t target) {
     }
 }
 
+
+
+link_t Links::BFactorByTarget(Link* node) {
+    return GetLinkByIndex(node->RightAsTarget)->SizeAsTarget - GetLinkByIndex(node->LeftAsTarget)->SizeAsTarget;
+}
+
+void Links::FixSizeByTarget(Link* node) {
+    node->SizeAsTarget = 0;
+    if(node->LeftAsTarget) {
+        node->SizeAsTarget = GetLinkByIndex(node->LeftAsTarget)->SizeAsTarget; 
+    }
+    if(node->RightAsTarget) {
+        node->SizeAsTarget += GetLinkByIndex(node->RightAsTarget)->SizeAsTarget;
+    }
+}
+
+Link* Links::LeftRotateByTarget(Link* mNode) {
+    Link* sNode = GetLinkByIndex(mNode->RightAsTarget);
+    mNode->RightAsTarget = sNode->LeftAsTarget; 
+    sNode->LeftAsTarget = GetIndexByLink(mNode);
+    FixSizeByTarget(mNode);
+    FixSizeByTarget(sNode);
+    return sNode;
+}
+
+Link* Links::RightRotateByTarget(Link* mNode) {
+    Link* sNode = GetLinkByIndex(mNode->RightAsTarget);
+    mNode->LeftAsTarget = sNode->RightAsTarget;
+    sNode->LeftAsTarget = GetIndexByLink(mNode);
+    FixSizeByTarget(mNode);
+    FixSizeByTarget(sNode);
+    return sNode;
+}
+
+
+Link* Links::BalanceByTarget(Link* node) {
+    FixSizeByTarget(node);
+    if(BFactorByTarget(node) == 2) {
+        if(BFactorByTarget(GetLinkByIndex(node->RightAsTarget)) < 0) {
+            node->RightAsTarget = GetIndexByLink(
+                    RightRotateByTarget(
+                        GetLinkByIndex(node->RightAsTarget)));
+        }
+        return LeftRotateByTarget(node);
+    }
+    if(BFactorByTarget(node) == -2) {
+        if(BFactorByTarget(GetLinkByIndex(node->LeftAsTarget)) > 0) {
+            node->LeftAsTarget = GetIndexByLink(
+                    RightRotateByTarget(
+                        GetLinkByIndex(node->LeftAsTarget)));
+        }
+        return RightRotateByTarget(node);
+    }
+    return node;
+}
+
+Link* Links::InsertLinkByTarget(Link* link) {
+    Link* sourceLink = GetLinkByIndex(link->Target);
+    Link* rootAsTarget = GetLinkByIndex(sourceLink->RootAsTarget);
+    if(rootAsTarget != 0) {
+        Link* currentNode = rootAsTarget;
+        while(true) {
+            if(currentNode->Source > link->Source) {
+                if(currentNode->LeftAsTarget == 0) {
+                    currentNode->LeftAsTarget = GetIndexByLink(link);
+                    currentNode->SizeAsTarget++;
+                    return BalanceByTarget(currentNode);
+                }
+                else {
+                    currentNode = GetLinkByIndex(currentNode->LeftAsTarget);
+                    continue;
+                }
+            }
+            else if(currentNode->Source < link->Source){
+                if(currentNode->RightAsTarget == 0) {
+                    currentNode->RightAsTarget = GetIndexByLink(link);
+                    currentNode->SizeAsTarget++;
+                    return BalanceByTarget(currentNode);
+                }
+                else {
+                    currentNode = GetLinkByIndex(currentNode->RightAsTarget);
+                    continue;
+                }
+            }
+            else {
+                return currentNode;
+            }
+        }
+    }
+    else {
+        sourceLink->RootAsTarget = GetIndexByLink(link);
+        rootAsTarget->SizeAsTarget++;
+        return rootAsTarget;
+    }
+}
+
+Link* Links::SearchLinkByTarget(link_t source, link_t target) {
+    Link* sourceLink = GetLinkByIndex(source);
+    Link* rootAsTarget = GetLinkByIndex(sourceLink->RootAsTarget);
+    if(rootAsTarget != 0) {
+        Link* currentNode = rootAsTarget;
+        while(true) {
+            if(currentNode->Source > source) {
+                if(currentNode->LeftAsTarget == 0) {
+                    return nullptr;
+                    std::cout << "LinksPlatform] Link not found" << std::endl;
+                    break;
+                }
+                else {
+                    currentNode = GetLinkByIndex(currentNode->LeftAsTarget);
+                    continue;
+                }
+            }
+            else if(currentNode->Source < source) {
+                if(currentNode->RightAsTarget == 0) {
+                    return nullptr;
+                    std::cout <<"[LinksPlatform] Link not found" << std::endl;
+                    break;
+                }
+                else {
+                    currentNode = GetLinkByIndex(currentNode->RightAsTarget);
+                    continue;
+                }
+            }
+            else {
+                return currentNode;
+            }
+        }
+    }
+    else {
+        return nullptr;
+        std::cout << "[LinksPlatform] Link not found" << std::endl;
+    }
+}
