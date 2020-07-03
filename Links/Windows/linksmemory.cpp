@@ -69,8 +69,8 @@ void LinksMemory::Remap() {
             std::cerr << "[LinksPlatform] Windows/linksmap.cpp: MapViewOfFileErrorException. ERRNO:";
             throw(GetLastError());
         }
-        MappedLinks = MapViewOfFile(FileDescriptor.hMapping, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, (DWORD)MapSize);
-        if(MappedLinks == nullptr) {
+        MappedMemory = MapViewOfFile(FileDescriptor.hMapping, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, (DWORD)MapSize);
+        if(MappedMemory == nullptr) {
             CloseHandle(FileDescriptor.hMapping);
             CloseHandle(FileDescriptor.hFile);
             std::cerr << "[LinksPlatform] Windows/linksmap.cpp: MapViewOfFileErrorException. ERRNO:";
@@ -80,9 +80,31 @@ void LinksMemory::Remap() {
     catch(DWORD err) {
         std::cerr << err << std::endl;
     }
-
 }
 
+void LinksMemory::ShrinkMap(size_t offset) {
+    UnMapViewOfFile(MappedMemory);
+    CloseHandle(hMapping);
+    ResizeFile(FileDescriptor.hFile, MapSize + BlockSize);
+    FileDescriptor.hMapping = CreateFileMapping(FileDescriptor.hFile, nullptr, PAGE_READWRITE, 0, (DWORD)(MapSize + offset), nullptr);
+    try {
+        if(FileDescriptor.hMapping == nullptr) {
+            CloseHandle(hFile);
+            std::cerr << "[LinksPlatform] Windows/linksmap.cpp: MapViewOfFileErrorException. ERRNO:";
+            throw(GetLastError());
+        }
+        MappedMemory = MapViewOfFile(FileDescriptor.hMapping, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, (DWORD)(MapSize + offset));
+        if(MappedMemory == nullptr) {
+            CloseHandle(FileDescriptor.hMapping);
+            CloseHandle(FileDescriptor.hFile);
+            std::cerr << "[LinksPlatform] Windows/linksmap.cpp: MapViewOfFileErrorException. ERRNO:";
+            throw(GetLastError());
+        }
+    }
+    catch(DWORD err) {
+        std::cerr << err << std::endl;
+    }
+}
 
 void LinksMemory::Close() {
     UnMap();

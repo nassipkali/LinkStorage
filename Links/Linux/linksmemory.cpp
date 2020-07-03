@@ -32,7 +32,6 @@ void* LinksMemory::Map(const char* filename, size_t offset = 0){
             throw(errno);
         }
 
-
         this->MapSize = st.st_size + offset;
         ResizeFile(MapSize);
 

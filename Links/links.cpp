@@ -303,7 +303,6 @@ Link* Links::BalanceBySource(Link* node) {
 }
 
 Link* Links::InsertLinkBySource(Link* link) {
-    link_t index = GetIndexByLink(link);
     Link* sourceLink = GetLinkByIndex(link->Source);
     link_t rootIndex = sourceLink->RootAsSource;
     Link* rootAsSource = GetLinkByIndex(rootIndex);
