@@ -16,7 +16,7 @@ Links::Links(const char* dbname, size_t blocksize) {
     
     ReservedLinks = this->Memory.MapSize / sizeof(Link);
     if(AllocatedLinks == 0) {
-        Init();
+	CreateLink();	
     }
 }
 
@@ -197,15 +197,6 @@ void Links::Close() {
     Memory.Close();
 }
 
-void Links::Init() {
-    AllocatedLinks = 1;
-    //uint64_t ExpOfTwo = 1;
-    for(int i = 0; i < 64; i++) {
-        this->Create(0, 0);
-        //ExpOfTwo *= 2;
-    }
-    std::cout << "First Initialization." << std::endl;
-}
 
 size_t Links::GetMemoryMapSize() {
     return ReservedLinks * sizeof(Link);

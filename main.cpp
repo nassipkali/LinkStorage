@@ -3,16 +3,11 @@
 #include "Links/links.hpp"
 const char exitcmd[] = "exit";
 const char newlink[] = "nl";
-const char numtolink[] = "ntl";
-const char linktonum[] = "ltn";
 const char getlink[] = "gl";
 const char linkcount[] = "lc";
 const char mem[] = "mem";
 const char hlp[] = "help";
 const char del[] = "dl";
-const char delseq[] = "ds";
-const char strtolink[] = "stl";
-const char linktostr[] = "lts";
 const char searchBySrc[] = "sbs";
 const char searchByTrg[] = "sbt";
 int main(int argc, char* argv[]){
@@ -53,47 +48,11 @@ int main(int argc, char* argv[]){
         else if(strncmp(linkcount, answer, sizeof(linkcount)) == 0) {
             std::cout << "Link count: " << links.GetAllocatedLinksCount() << std::endl;
         }
-        else if(strncmp(numtolink, answer, sizeof(numtolink)) == 0) {
-            int num;
-            std::cin >> num;
-            Link* link = links.NumberToLink(num);
-            std::cout << "Link index: " << links.GetIndexByLink(link) << std::endl;
-        }
-        else if(strncmp(linktonum, answer, sizeof(linktonum)) == 0){
-            link_t index;
-            std::cin >> index;
-            Link* link = links[index];
-            int num = links.LinkToNumber<int>(link);
-            std::cout << "Number: " << num << std::endl;
-        }
         else if(strncmp(del, answer, sizeof(del)) == 0) {
             link_t index;
             std::cin >> index;
             links.Delete(index);
             std::cout << "Free count: " << links.GetFreeLinksCount() << std::endl;
-        }
-        else if(strncmp(delseq, answer, sizeof(delseq)) == 0) {
-            link_t index;
-            std::cin >> index;
-            links.DeleteSequence(index);
-            std::cout << "Free count: " << links.GetFreeLinksCount() << std::endl;
-        }
-        else if(strncmp(strtolink, answer, sizeof(strtolink)) == 0) {
-            char *str = (char*)malloc(sizeof(char) * 100);
-            std::cin >> str;
-            std::cout << "stroka: " << str << std::endl;
-            Link* link = links.ArrayToSequence(str, strlen(str) + 1);
-            std::cout << "String index: " << links.GetIndexByLink(link) << std::endl;
-        }
-        else if(strncmp(linktostr, answer, sizeof(linktostr)) == 0) {
-            link_t index;
-            std::cin >> index;
-            char *str = nullptr;
-            Link* link = links.GetLinkByIndex(index);
-            str = links.SequenceToArray<char>(link);
-            std::cout << "String:";
-            printf("%s", str);
-            std::cout << std::endl;
         }
         else if(strncmp(searchBySrc, answer, sizeof(searchBySrc)) == 0) {
             link_t source, target;
