@@ -86,8 +86,8 @@ Link<T>* Links<T>::CreateLink(T source, T target) {
     link->RootAsTarget = 0;
     link->SizeAsSource = 0;
     link->SizeAsTarget = 0;
-    InsertLinkToSourceTree(link);
-    InsertLinkToTargetTree(link);
+    //InsertLinkToSourceTree(link);
+    //InsertLinkToTargetTree(link);
     return link;
 }
 
