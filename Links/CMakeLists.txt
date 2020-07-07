@@ -1,1 +1,1 @@
-add_library(Links STATIC links.cpp ${CMAKE_SYSTEM_NAME}/linksmemory.cpp)
+add_library(Links STATIC ${CMAKE_SYSTEM_NAME}/linksmemory.cpp)

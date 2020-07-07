@@ -19,6 +19,10 @@ class Links
         T LastFreeLink;
         T ReservedField;
         size_t BlockSize;
+        Link<T>* InsertLinkToSourceTree(Link<T>* node);
+        Link<T>* InsertLinkToTargetTree(Link<T>* node);
+        void DeleteLinkFromSourceTree(Link<T>* node);
+        void DeleteLinkFromTargetTree(Link<T>* node);
     public:
         Links(const char* dbname, size_t blocksize = 1024 * 1024 * 16);
         Link<T>* operator[] (const T index);
@@ -29,8 +33,6 @@ class Links
         void Delete(Link<T>* link);
         Link<T>* GetLinkByIndex(T index);
         T GetIndexByLink(Link<T>* link);
-        Link<T>* InsertLinkToSourceTree(Link<T>* node);
-        Link<T>* InsertLinkToTargetTree(Link<T>* node);
         Link<T>* SearchLinkBySource(T Source, T Target);
         Link<T>* SearchLinkByTarget(T Source, T Target);
         T GetAllocatedLinksCount();
