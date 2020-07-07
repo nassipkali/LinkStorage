@@ -5,11 +5,13 @@ Original Idea from https://github.com/linksplatform
 #include <iostream>
 #include "Links/links.hpp"
 
+typedef Link<size_t> Link_t;
+
 int main()
 {
-    Links links("db.links");
+    Links<size_t> links("db.links");
     std::cout << "Hello World!" << std::endl;
-    Link *link = links.Create();
+    Link_t *link = links.Create();
     std::cout << "Link Count: " << links.GetLinkCount() << std::endl;
     std::cout << "My first link! (" << link->Source<< " " << link->Target << ")\n";
     std::cout << "Link index" << links.GetIndexByLink(link) << std::endl;
