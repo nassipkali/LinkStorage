@@ -180,6 +180,83 @@ void Links<T>::RightRotateByTargetTree(T qNode) {
     *qNodePtr = *pNodePtr;
     *pNodePtr = temp;
 }
+
+template <typename T>
+void Links<T>::MaintainBySourceTree(T node, bool flag) {
+    LinkIndex<T>* nodePtr = &LinksIndexArray[node];
+    LinkIndex<T>* nodeLeftPtr = &LinksIndexArray[nodePtr->LeftAsSource];
+    LinkIndex<T>* nodeRightPtr = &LinksIndexArray[nodePtr->RightAsSource];
+    if(flag) {
+        if(nodeLeftPtr->SizeAsSource < LinksIndexArray[nodeRightPtr->LeftAsSource].SizeAsSource) {
+            //case 1
+            RightRotateBySourceTree(nodePtr->RightAsSource);
+            LeftRotateBySourceTree(node);
+        }
+        else if(nodeLeftPtr->SizeAsSource < LinksIndexArray[nodeRightPtr->RightAsSource].SizeAsSource) {
+            //case 2
+            LeftRotateBySourceTree(node);
+        }
+        else {
+            return;
+        }
+    }
+    else {
+        if(nodeRightPtr->SizeAsSource < LinksIndexArray[nodeLeftPtr->RightAsSource].SizeAsSource) {
+            //case 1'
+            LeftRotateBySourceTree(nodePtr->LeftAsSource);
+            RightRotateBySourceTree(node);
+        }
+        else if(nodeRightPtr->SizeAsSource < LinksIndexArray[nodeLeftPtr->LeftAsSource].SizeAsSource) {
+            RightRotateBySourceTree(node);
+        }
+        else {
+            return;
+        }
+    }
+    MaintainBySourceTree(nodePtr->LeftAsSource, false);
+    MaintainBySourceTree(nodePtr->RightAsSource, true);
+    MaintainBySourceTree(node, true);
+    MaintainBySourceTree(node, false);
+}
+
+template <typename T>
+void Links<T>::MaintainByTargetTree(T node, bool flag) {
+    LinkIndex<T>* nodePtr = &LinksIndexArray[node];
+    LinkIndex<T>* nodeLeftPtr = &LinksIndexArray[nodePtr->LeftAsTarget];
+    LinkIndex<T>* nodeRightPtr = &LinksIndexArray[nodePtr->RightAsTarget];
+    if(flag) {
+        if(nodeLeftPtr->SizeAsTarget < LinksIndexArray[nodeRightPtr->LeftAsTarget].SizeAsTarget) {
+            //case 1
+            RightRotateByTargetTree(nodePtr->RightAsTarget);
+            LeftRotateByTargetTree(node);
+        }
+        else if(nodeLeftPtr->SizeAsTarget < LinksIndexArray[nodeRightPtr->RightAsTarget].SizeAsTarget) {
+            //case 2
+            LeftRotateByTargetTree(node);
+        }
+        else {
+            return;
+        }
+    }
+    else {
+        if(nodeRightPtr->SizeAsTarget < LinksIndexArray[nodeLeftPtr->RightAsTarget].SizeAsTarget) {
+            //case 1'
+            LeftRotateByTargetTree(nodePtr->LeftAsTarget);
+            RightRotateByTargetTree(node);
+        }
+        else if(nodeRightPtr->SizeAsTarget < LinksIndexArray[nodeLeftPtr->LeftAsTarget].SizeAsTarget) {
+            RightRotateByTargetTree(node);
+        }
+        else {
+            return;
+        }
+    }
+    MaintainByTargetTree(nodePtr->LeftAsTarget, false);
+    MaintainByTargetTree(nodePtr->RightAsTarget, true);
+    MaintainByTargetTree(node, true);
+    MaintainByTargetTree(node, false);
+}
+
 /*END*/
 
 template <typename T>
