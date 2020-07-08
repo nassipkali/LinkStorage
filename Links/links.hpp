@@ -1,6 +1,7 @@
 #ifndef LINKS_HPP
 #define LINKS_HPP
-#include "link.hpp"
+#include "linkdata.hpp"
+#include "linkindex.hpp"
 #include "linksmemory.hpp"
 
 
@@ -8,33 +9,29 @@ template <typename T>
 class Links
 {
     private:
-        LinksMemory Memory;
-        Link<T>* LinksArray;
+        LinksMemory DataMemory;
+        LinksMemory IndexMemory;
+        LinkData<T>* LinksDataArray;
+        LinkIndex<T>* LinksIndexArray;
         T AllocatedLinks;
         T ReservedLinks;
         T FreeLinks;
         T FirstFreeLink;
-        T FirstAsSource;
-        T FirstAsTarget;
         T LastFreeLink;
-        T ReservedField;
         size_t BlockSize;
-        Link<T>* InsertLinkToSourceTree(Link<T>* node);
-        Link<T>* InsertLinkToTargetTree(Link<T>* node);
-        void DeleteLinkFromSourceTree(Link<T>* node);
-        void DeleteLinkFromTargetTree(Link<T>* node);
+        void InsertLinkToSourceTree(T node);
+        void InsertLinkToTargetTree(T node);
+        void DeleteLinkFromSourceTree(T node);
+        void DeleteLinkFromTargetTree(T node);
     public:
-        Links(const char* dbname, size_t blocksize = 1024 * 1024 * 16);
-        Link<T>* operator[] (const T index);
-        Link<T>* CreateLink(T source, T target);
-        void UpdateLink(Link<T>* link, T source, T target);
+        Links(const char* dataFile, const char* indexFile, size_t blocksize = 1024 * 1024 * 16);
+        T CreateLink(T source, T target);
+        LinkData<T> GetLinkData(T link);
+        LinkIndex<T> GetLinkIndex(T link);
         void UpdateLink(T linkindex, T source, T target);
         void Delete(T index);
-        void Delete(Link<T>* link);
-        Link<T>* GetLinkByIndex(T index);
-        T GetIndexByLink(Link<T>* link);
-        Link<T>* SearchLinkBySource(T Source, T Target);
-        Link<T>* SearchLinkByTarget(T Source, T Target);
+        T SearchLinkBySource(T Source, T Target);
+        T SearchLinkByTarget(T Source, T Target);
         T GetAllocatedLinksCount();
         T GetReservedLinksCount();
         T GetFreeLinksCount();
@@ -42,76 +39,75 @@ class Links
 };
 
 template <typename T>
-Links<T>::Links(const char* dbname, size_t blocksize) {
-    LinksArray = (Link<T>*)Memory.Map(dbname, blocksize);
+Links<T>::Links(const char* dataFile, const char* indexFile, size_t blocksize) {
+    LinksDataArray = (LinkData<T>*)DataMemory.Map(dataFile, blocksize);
+    LinksIndexArray = (LinkIndex<T>*)IndexMemory.Map(indexFile, blocksize*4);
     // MetaData loads from 0 link
-    AllocatedLinks = LinksArray[0].Source; //Количество используемых связей
-    ReservedLinks = LinksArray[0].Target; //Количество выделенных связей
-    FreeLinks = LinksArray[0].LeftAsSource; // Количество неиспользуемых/удаленных связей
-    FirstFreeLink = LinksArray[0].RightAsSource; //Индекс первой удаленной связи
-    FirstAsSource = LinksArray[0].SizeAsSource; //Корень дерева отсортированных по Source
-    FirstAsTarget = LinksArray[0].LeftAsTarget; //Корень дерева отсортированных по Target
-    LastFreeLink = LinksArray[0].RightAsTarget; //Индекс последней удаленной связи
-    ReservedField = LinksArray[0].SizeAsTarget; //Поле не используется
+    AllocatedLinks = LinksIndexArray[0].RootAsSource; //Количество используемых связей
+    ReservedLinks = LinksIndexArray[0].LeftAsSource; //Количество выделенных связей
+    FreeLinks = LinksIndexArray[0].RightAsSource; // Количество неиспользуемых/удаленных связей
+    FirstFreeLink = LinksIndexArray[0].SizeAsSource; //Индекс первой удаленной связи
+    LastFreeLink = LinksIndexArray[0].RootAsTarget; //Индекс последней удаленной связи
 
-    ReservedLinks = this->Memory.MapSize / sizeof(Link<T>);
+    ReservedLinks = this->DataMemory.MapSize / sizeof(LinkData<T>);
     if(AllocatedLinks == 0) {
         AllocatedLinks = 1;
     }
 }
 
 
-template <typename T>
-Link<T>* Links<T>::operator[] (const T index) {
-    return &LinksArray[index];
-}
 
 template <typename T>
-Link<T>* Links<T>::CreateLink(T source, T target) {
-    Link<T>* link;
+T Links<T>::CreateLink(T source, T target) {
+    T index;
     if(FreeLinks > 0) {
-        link = &LinksArray[LastFreeLink];
-        LastFreeLink = LinksArray[LastFreeLink].Source;
+        index = LastFreeLink;
+        LastFreeLink = LinksDataArray[LastFreeLink].Source;
         FreeLinks--;
     }
     else {
-        link = &LinksArray[AllocatedLinks];
+        index = AllocatedLinks;
         AllocatedLinks++;
     }
-    link->Source = source;
-    link->Target = target;
-    link->LeftAsSource = 0;
-    link->LeftAsTarget = 0;
-    link->RightAsSource = 0;
-    link->RightAsTarget = 0;
-    link->RootAsSource = 0;
-    link->RootAsTarget = 0;
-    link->SizeAsSource = 0;
-    link->SizeAsTarget = 0;
+    LinksDataArray[index].Source = source;
+    LinksDataArray[index].Target = target;
+    LinksIndexArray[index].RootAsSource = 0;
+    LinksIndexArray[index].LeftAsSource = 0;
+    LinksIndexArray[index].RightAsSource = 0;
+    LinksIndexArray[index].SizeAsSource = 0;
+    LinksIndexArray[index].RootAsTarget = 0;
+    LinksIndexArray[index].LeftAsTarget = 0;
+    LinksIndexArray[index].RightAsTarget = 0;
+    LinksIndexArray[index].SizeAsTarget = 0;
     //InsertLinkToSourceTree(link);
     //InsertLinkToTargetTree(link);
-    return link;
+    return index;
+}
+
+template <typename T>
+LinkData<T> Links<T>::GetLinkData(T link) {
+    return LinksDataArray[link];
+}
+
+template <typename T>
+LinkIndex<T> Links<T>::GetLinkIndex(T link) {
+    return LinksIndexArray[link];
 }
 
 
 template <typename T>
-void Links<T>::UpdateLink (Link<T>* link, T source, T target ) {
-    link->Source = source;
-    link->Target = target;
+void Links<T>::UpdateLink (T link, T source, T target ) {
+    LinksDataArray[link].Source = source;
+    LinksDataArray[link].Target = target;
 }
 
-template <typename T>
-void Links<T>::UpdateLink (T linkindex, T source, T target ) {
-    LinksArray[linkindex].Source = source;
-    LinksArray[linkindex].Target = target;
-}
 
 template <typename T>
 void Links<T>::Delete(T index) {
     if(FreeLinks) {
         FreeLinks++;
-        LinksArray[LastFreeLink].Target = index;
-        LinksArray[index].Source = LastFreeLink;
+        LinksDataArray[LastFreeLink].Target = index;
+        LinksDataArray[index].Source = LastFreeLink;
         LastFreeLink = index;
     }
     else {
@@ -121,31 +117,8 @@ void Links<T>::Delete(T index) {
     }
 }
 
-template <typename T>
-void Links<T>::Delete(Link<T>* link) {
-    if(FreeLinks) {
-        FreeLinks++;
-        T index = GetIndexByLink(link);
-        LinksArray[LastFreeLink].Target = index;
-        link->Source = LastFreeLink;
-        LastFreeLink = index;
-    }
-    else {
-        FreeLinks++;
-        FirstFreeLink = GetIndexByLink(link);
-        LastFreeLink = GetIndexByLink(link);
-    }
-}
 
-template <typename T>
-Link<T>* Links<T>::GetLinkByIndex(T index) {
-    return &LinksArray[index];
-}
 
-template <typename T>
-T Links<T>::GetIndexByLink(Link<T>* link) {
-    return (link - LinksArray);
-}
 
 
 /* Here should be code of search methods  */
@@ -168,16 +141,15 @@ T Links<T>::GetFreeLinksCount() {
 
 template <typename T>
 void Links<T>::Close() {
-    LinksArray[0].Source = AllocatedLinks; //Количество используемых связей
-    LinksArray[0].Target = ReservedField; //Количество выделенных связей
-    LinksArray[0].LeftAsSource = FreeLinks; // Количество неиспользуемых/удаленных связей
-    LinksArray[0].RightAsSource = FirstFreeLink; //Индекс первой удаленной связи
-    LinksArray[0].SizeAsSource = FirstAsSource; //Корень дерева отсортированных по Source
-    LinksArray[0].LeftAsTarget = FirstAsTarget; //Корень дерева отсортированных по Target
-    LinksArray[0].RightAsTarget = LastFreeLink; //Индекс последней удаленной связи
-    LinksArray[0].SizeAsTarget = ReservedField; //Поле не используется
-    Memory.ResizeFile(AllocatedLinks * sizeof(Link<T>));
-    Memory.Close();
+    AllocatedLinks = LinksIndexArray[0].RootAsSource = AllocatedLinks; //Количество используемых связей
+    ReservedLinks = LinksIndexArray[0].LeftAsSource = ReservedLinks; //Количество выделенных связей
+    FreeLinks = LinksIndexArray[0].RightAsSource = FreeLinks; // Количество неиспользуемых/удаленных связей
+    FirstFreeLink = LinksIndexArray[0].SizeAsSource = FirstFreeLink; //Индекс первой удаленной связи
+    LastFreeLink = LinksIndexArray[0].RootAsTarget = LastFreeLink; //Индекс последней удаленной связи
+    DataMemory.ResizeFile(AllocatedLinks * sizeof(LinkData<T>));
+    DataMemory.Close();
+    IndexMemory.ResizeFile(AllocatedLinks * sizeof(LinkIndex<T>));
+    IndexMemory.Close();
 }
 
 

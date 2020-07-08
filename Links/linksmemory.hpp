@@ -2,7 +2,6 @@
 #define LINKSMAP_HPP
 
 #include <stddef.h>
-#include "link.hpp"
 #include "FileDescriptor.h"
 
 
