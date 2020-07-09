@@ -80,11 +80,11 @@ T Links<T>::CreateLink(T source, T target) {
     LinksIndexArray[index].RootAsSource = 0;
     LinksIndexArray[index].LeftAsSource = 0;
     LinksIndexArray[index].RightAsSource = 0;
-    LinksIndexArray[index].SizeAsSource = 0;
+    LinksIndexArray[index].SizeAsSource = 1;
     LinksIndexArray[index].RootAsTarget = 0;
     LinksIndexArray[index].LeftAsTarget = 0;
     LinksIndexArray[index].RightAsTarget = 0;
-    LinksIndexArray[index].SizeAsTarget = 0;
+    LinksIndexArray[index].SizeAsTarget = 1;
     //InsertLinkToSourceTree(link);
     //InsertLinkToTargetTree(link);
     return index;
@@ -267,7 +267,8 @@ void Links<T>::InsertLinkToSourceTree(T node) {
         T root = sourceIndexPtr->RootAsSource;
         if(LinksDataArray[root].Target > target) {
             if(LinksIndexArray[root].LeftAsSource != 0) {
-                T currentLink = root;
+                LinksIndexArray[root].SizeAsSource++;
+                T currentLink = LinksIndexArray[root].LeftAsSource;
                 std::stack<T> nodes;
                 while(1) {
                     LinksIndexArray[currentLink].SizeAsSource++;
@@ -286,6 +287,22 @@ void Links<T>::InsertLinkToSourceTree(T node) {
                             return;
                         }
                     }
+                }
+            }
+            else {
+                LinksIndexArray[root].LeftAsSource = node;
+                LinksIndexArray[root].SizeAsSource++;
+                MaintainBySourceTree(root, LinksDataArray[node].Target >= target);
+            }
+        }
+        else if(LinksDataArray[root].Target < target) {
+            if(LinksIndexArray[root].RightAsSource != 0) {
+                LinksIndexArray[root].SizeAsSource++;
+                T currentLink = LinksIndexArray[root].RightAsSource;
+                std::stack<T> nodes;
+                while(1) {
+                    LinksIndexArray[currentLink].SizeAsSource++;
+                    if(LinksDataArray[currentLink].Target < target)
                 }
             }
         }
