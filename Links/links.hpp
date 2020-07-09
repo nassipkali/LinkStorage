@@ -3,7 +3,7 @@
 #include "linkdata.hpp"
 #include "linkindex.hpp"
 #include "linksmemory.hpp"
-
+#include <stack>
 
 template <typename T>
 class Links
@@ -255,6 +255,45 @@ void Links<T>::MaintainByTargetTree(T node, bool flag) {
     MaintainByTargetTree(nodePtr->RightAsTarget, true);
     MaintainByTargetTree(node, true);
     MaintainByTargetTree(node, false);
+}
+
+template <typename T>
+void Links<T>::InsertLinkToSourceTree(T node) {
+    T source = LinksDataArray[node];
+    T target = LinksDataArray[node];
+    LinkIndex<T>* sourceIndexPtr = &LinksIndexArray[source];
+    LinkIndex<T>* targetIndexPtr = &LinksIndexArray[target];
+    if(!sourceIndexPtr->RootAsSource) {
+        T root = sourceIndexPtr->RootAsSource;
+        if(LinksDataArray[root].Target > target) {
+            if(LinksIndexArray[root].LeftAsSource != 0) {
+                T currentLink = root;
+                std::stack<T> nodes;
+                while(1) {
+                    LinksIndexArray[currentLink].SizeAsSource++;
+                    if(LinksDataArray[currentLink].Target > target){
+                        if(LinksIndexArray[currentLink].LeftAsSource != 0) {
+                            nodes.push(currentLink);
+                            currentLink = LinksIndexArray[currentLink].LeftAsSource;
+                        }
+                        else {
+                            LinksIndexArray[currentLink].LeftAsSource = node;
+                            while(nodes.size() != 1) {
+                                T node = nodes.top();
+                                nodes.pop();
+                                MaintainBySourceTree(nodes.top(), LinksDataArray[node].Target >= LinksDataArray[nodes.top()].Target);
+                            }
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else {
+        sourceIndexPtr->RootAsSource = node;
+        sourceIndexPtr->SizeAsSource = 1;
+    }
 }
 
 /*END*/
