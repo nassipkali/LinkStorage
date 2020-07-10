@@ -87,7 +87,7 @@ T Links<T>::CreateLink(T source, T target) {
     LinksIndexArray[link].SizeAsTarget = 1;
     InsertLinkToSourceTree(link);
     InsertLinkToTargetTree(link);
-    return index;
+    return link;
 }
 
 template <typename T>
