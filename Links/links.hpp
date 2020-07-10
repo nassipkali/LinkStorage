@@ -19,12 +19,12 @@ class Links
         T FirstFreeLink;
         T LastFreeLink;
         size_t BlockSize;
-        void LeftRotateBySourceTree(T pNode);
-        void RightRotateBySourceTree(T qNode);
-        void LeftRotateByTargetTree(T pNode);
-        void RightRotateByTargetTree(T qNode);
-        void MaintainBySourceTree(T node, bool flag);
-        void MaintainByTargetTree(T node, bool flag);
+        void LeftRotateBySourceTree(T rootNode, T pNode);
+        void RightRotateBySourceTree(T rootNode, T qNode);
+        void LeftRotateByTargetTree(T rootNode, T pNode);
+        void RightRotateByTargetTree(T rootNode, T qNode);
+        void MaintainBySourceTree(T rootNode, T node, bool flag);
+        void MaintainByTargetTree(T rootNode, T node, bool flag);
         void InsertLinkToSourceTree(T node);
         void InsertLinkToTargetTree(T node);
         void DeleteLinkFromSourceTree(T node);
@@ -130,16 +130,20 @@ void Links<T>::Delete(T index) {
 /* Here should be code of search methods  */
 
 template <typename T>
-void Links<T>::LeftRotateBySourceTree(T pNode) {
+void Links<T>::LeftRotateBySourceTree(T rootNode, T pNode) {
+    T qNode = LinksIndexArray[pNode].RightAsSource;
     LinkIndex<T> *pNodePtr = &LinksIndexArray[pNode];
-    LinkIndex<T> *qNodePtr = &LinksIndexArray[pNodePtr->RightAsSource];
+    LinkIndex<T> *qNodePtr = &LinksIndexArray[qNode];
     pNodePtr->RightAsSource = qNodePtr->LeftAsSource;
     qNodePtr->LeftAsSource = pNode;
     qNodePtr->SizeAsSource = pNodePtr->SizeAsSource;
     pNodePtr->SizeAsSource = LinksIndexArray[pNodePtr->LeftAsSource].SizeAsSource + LinksIndexArray[pNodePtr->RightAsSource].SizeAsSource + 1;
-    LinkIndex<T> temp = *pNodePtr;
-    *pNodePtr = *qNodePtr;
-    *qNodePtr = temp;
+    if(LinksIndexArray[rootNode].RightAsSource == pNode) {
+        LinksIndexArray[rootNode].RightAsSource = qNode;
+    }
+    else {
+        LinksIndexArray[rootNode].LeftAsSource = qNode;
+    }
 }
 
 template <typename T>
