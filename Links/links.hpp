@@ -314,7 +314,9 @@ void Links<T>::InsertLinkToSourceTree(T node) {
                 while(nodes.size() != 1) {
                     T node = nodes.top();
                     nodes.pop();
-                    MaintainBySourceTree(nodes.top(), LinksDataArray[node].Target >= LinksDataArray[nodes.top()].Target);
+                    T rNode = nodes.top();
+                    nodes.pop();
+                    MaintainBySourceTree(nodes.top(), rNode, LinksDataArray[node].Target >= LinksDataArray[nodes.top()].Target);
                 }
             }
             else {
@@ -415,7 +417,9 @@ void Links<T>::InsertLinkToTargetTree(T node) {
                 while(nodes.size() != 1) {
                     T node = nodes.top();
                     nodes.pop();
-                    MaintainByTargetTree(nodes.top(), LinksDataArray[node].Source >= LinksDataArray[nodes.top()].Source);
+                    T rNode = nodes.top();
+                    nodes.pop();
+                    MaintainByTargetTree(nodes.top(), rNode, LinksDataArray[node].Source >= LinksDataArray[nodes.top()].Source);
                 }
             }
             else {
