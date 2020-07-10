@@ -233,19 +233,19 @@ void Links<T>::MaintainBySourceTree(T rootNode, T node, bool flag) {
 }
 
 template <typename T>
-void Links<T>::MaintainByTargetTree(T node, bool flag) {
+void Links<T>::MaintainByTargetTree(T rootNode, T node, bool flag) {
     LinkIndex<T>* nodePtr = &LinksIndexArray[node];
     LinkIndex<T>* nodeLeftPtr = &LinksIndexArray[nodePtr->LeftAsTarget];
     LinkIndex<T>* nodeRightPtr = &LinksIndexArray[nodePtr->RightAsTarget];
     if(flag) {
         if(nodeLeftPtr->SizeAsTarget < LinksIndexArray[nodeRightPtr->LeftAsTarget].SizeAsTarget) {
             //case 1
-            RightRotateByTargetTree(nodePtr->RightAsTarget);
-            LeftRotateByTargetTree(node);
+            RightRotateByTargetTree(node, nodePtr->RightAsTarget);
+            LeftRotateByTargetTree(rootNode, node);
         }
         else if(nodeLeftPtr->SizeAsTarget < LinksIndexArray[nodeRightPtr->RightAsTarget].SizeAsTarget) {
             //case 2
-            LeftRotateByTargetTree(node);
+            LeftRotateByTargetTree(rootNode, node);
         }
         else {
             return;
@@ -254,20 +254,20 @@ void Links<T>::MaintainByTargetTree(T node, bool flag) {
     else {
         if(nodeRightPtr->SizeAsTarget < LinksIndexArray[nodeLeftPtr->RightAsTarget].SizeAsTarget) {
             //case 1'
-            LeftRotateByTargetTree(nodePtr->LeftAsTarget);
-            RightRotateByTargetTree(node);
+            LeftRotateByTargetTree(node, nodePtr->LeftAsTarget);
+            RightRotateByTargetTree(rootNode, node);
         }
         else if(nodeRightPtr->SizeAsTarget < LinksIndexArray[nodeLeftPtr->LeftAsTarget].SizeAsTarget) {
-            RightRotateByTargetTree(node);
+            RightRotateByTargetTree(rootNode, node);
         }
         else {
             return;
         }
     }
-    MaintainByTargetTree(nodePtr->LeftAsTarget, false);
-    MaintainByTargetTree(nodePtr->RightAsTarget, true);
-    MaintainByTargetTree(node, true);
-    MaintainByTargetTree(node, false);
+    MaintainByTargetTree(node, nodePtr->LeftAsTarget, false);
+    MaintainByTargetTree(node, nodePtr->RightAsTarget, true);
+    MaintainByTargetTree(rootNode, node, true);
+    MaintainByTargetTree(rootNode, node, false);
 }
 
 template <typename T>
