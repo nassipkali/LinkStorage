@@ -278,15 +278,27 @@ void Links<T>::InsertLinkToSourceTree(T node) {
                             currentLink = LinksIndexArray[currentLink].LeftAsSource;
                         }
                         else {
+                            nodes.push(currentLink);
                             LinksIndexArray[currentLink].LeftAsSource = node;
-                            while(nodes.size() != 1) {
-                                T node = nodes.top();
-                                nodes.pop();
-                                MaintainBySourceTree(nodes.top(), LinksDataArray[node].Target >= LinksDataArray[nodes.top()].Target);
-                            }
-                            return;
+                            break;
                         }
                     }
+                    else {
+                        if(LinksIndexArray[currentLink].RightAsSource != 0) {
+                            nodes.push(currentLink);
+                            currentLink = LinksIndexArray[currentLink].RightAsSource;
+                        }
+                        else {
+                            nodes.push(currentLink);
+                            LinksIndexArray[currentLink].RightAsSource = node;
+                            break;
+                        }
+                    }
+                }
+                while(nodes.size() != 1) {
+                    T node = nodes.top();
+                    nodes.pop();
+                    MaintainBySourceTree(nodes.top(), LinksDataArray[node].Target >= LinksDataArray[nodes.top()].Target);
                 }
             }
             else {
@@ -295,21 +307,151 @@ void Links<T>::InsertLinkToSourceTree(T node) {
                 MaintainBySourceTree(root, LinksDataArray[node].Target >= target);
             }
         }
-        else if(LinksDataArray[root].Target < target) {
+        else {
             if(LinksIndexArray[root].RightAsSource != 0) {
                 LinksIndexArray[root].SizeAsSource++;
                 T currentLink = LinksIndexArray[root].RightAsSource;
                 std::stack<T> nodes;
                 while(1) {
                     LinksIndexArray[currentLink].SizeAsSource++;
-                    if(LinksDataArray[currentLink].Target < target)
+                    if(LinksDataArray[currentLink].Target > target){
+                        if(LinksIndexArray[currentLink].LeftAsSource != 0) {
+                            nodes.push(currentLink);
+                            currentLink = LinksIndexArray[currentLink].LeftAsSource;
+                        }
+                        else {
+                            nodes.push(currentLink);
+                            LinksIndexArray[currentLink].LeftAsSource = node;
+                            break;
+                        }
+                    }
+                    else {
+                        if(LinksIndexArray[currentLink].RightAsSource != 0) {
+                            nodes.push(currentLink);
+                            currentLink = LinksIndexArray[currentLink].RightAsSource;
+                        }
+                        else {
+                            nodes.push(currentLink);
+                            LinksIndexArray[currentLink].RightAsSource = node;
+                            break;
+                        }
+                    }
                 }
+                while(nodes.size() != 1) {
+                    T node = nodes.top();
+                    nodes.pop();
+                    MaintainBySourceTree(nodes.top(), LinksDataArray[node].Target >= LinksDataArray[nodes.top()].Target);
+                }
+            }
+            else {
+                LinksIndexArray[root].RightAsSource = node;
+                LinksIndexArray[root].SizeAsSource++;
+                MaintainBySourceTree(root, LinksDataArray[node].Target >= target);
             }
         }
     }
     else {
         sourceIndexPtr->RootAsSource = node;
         sourceIndexPtr->SizeAsSource = 1;
+    }
+}
+
+template <typename T>
+void Links<T>::InsertLinkToTargetTree(T node) {
+    T source = LinksDataArray[node];
+    T target = LinksDataArray[node];
+    LinkIndex<T>* sourceIndexPtr = &LinksIndexArray[source];
+    LinkIndex<T>* targetIndexPtr = &LinksIndexArray[target];
+    if(!targetIndexPtr->RootAsTarget) {
+        T root = targetIndexPtr->RootAsTarget;
+        if(LinksDataArray[root].Source > source) {
+            if(LinksIndexArray[root].LeftAsTarget != 0) {
+                LinksIndexArray[root].SizeAsTarget++;
+                T currentLink = LinksIndexArray[root].LeftAsTarget;
+                std::stack<T> nodes;
+                while(1) {
+                    LinksIndexArray[currentLink].SizeAsTarget++;
+                    if(LinksDataArray[currentLink].Source > source){
+                        if(LinksIndexArray[currentLink].LeftAsTarget != 0) {
+                            nodes.push(currentLink);
+                            currentLink = LinksIndexArray[currentLink].LeftAsTarget;
+                        }
+                        else {
+                            nodes.push(currentLink);
+                            LinksIndexArray[currentLink].LeftAsTarget = node;
+                            break;
+                        }
+                    }
+                    else {
+                        if(LinksIndexArray[currentLink].RightAsTarget != 0) {
+                            nodes.push(currentLink);
+                            currentLink = LinksIndexArray[currentLink].RightAsTarget;
+                        }
+                        else {
+                            nodes.push(currentLink);
+                            LinksIndexArray[currentLink].RightAsTarget = node;
+                            break;
+                        }
+                    }
+                }
+                while(nodes.size() != 1) {
+                    T node = nodes.top();
+                    nodes.pop();
+                    MaintainByTargetTree(nodes.top(), LinksDataArray[node].Source >= LinksDataArray[nodes.top()].Source);
+                }
+            }
+            else {
+                LinksIndexArray[root].LeftAsTarget = node;
+                LinksIndexArray[root].SizeAsTarget++;
+                MaintainByTargetTree(root, LinksDataArray[node].Source >= source);
+            }
+        }
+        else {
+            if(LinksIndexArray[root].RightAsTarget != 0) {
+                LinksIndexArray[root].SizeAsTarget++;
+                T currentLink = LinksIndexArray[root].RightAsTarget;
+                std::stack<T> nodes;
+                while(1) {
+                    LinksIndexArray[currentLink].SizeAsTarget++;
+                    if(LinksDataArray[currentLink].Source > source){
+                        if(LinksIndexArray[currentLink].LeftAsTarget != 0) {
+                            nodes.push(currentLink);
+                            currentLink = LinksIndexArray[currentLink].LeftAsTarget;
+                        }
+                        else {
+                            nodes.push(currentLink);
+                            LinksIndexArray[currentLink].LeftAsTarget = node;
+                            break;
+                        }
+                    }
+                    else {
+                        if(LinksIndexArray[currentLink].RightAsTarget != 0) {
+                            nodes.push(currentLink);
+                            currentLink = LinksIndexArray[currentLink].RightAsTarget;
+                        }
+                        else {
+                            nodes.push(currentLink);
+                            LinksIndexArray[currentLink].RightAsTarget = node;
+                            break;
+                        }
+                    }
+                }
+                while(nodes.size() != 1) {
+                    T node = nodes.top();
+                    nodes.pop();
+                    MaintainByTargetTree(nodes.top(), LinksDataArray[node].Source >= LinksDataArray[nodes.top()].Source);
+                }
+            }
+            else {
+                LinksIndexArray[root].RightAsTarget = node;
+                LinksIndexArray[root].SizeAsTarget++;
+                MaintainByTargetTree(root, LinksDataArray[node].Source >= source);
+            }
+        }
+    }
+    else {
+        targetIndexPtr->RootAsTarget = node;
+        targetIndexPtr->SizeAsTarget = 1;
     }
 }
 
