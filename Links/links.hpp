@@ -322,7 +322,7 @@ void Links<T>::InsertLinkToSourceTree(T node) {
             else {
                 LinksIndexArray[root].LeftAsSource = node;
                 LinksIndexArray[root].SizeAsSource++;
-                MaintainBySourceTree(root, LinksDataArray[node].Target >= target);
+                MaintainBySourceTree(0, root, LinksDataArray[node].Target >= target);
             }
         }
         else {
@@ -366,7 +366,7 @@ void Links<T>::InsertLinkToSourceTree(T node) {
             else {
                 LinksIndexArray[root].RightAsSource = node;
                 LinksIndexArray[root].SizeAsSource++;
-                MaintainBySourceTree(root, LinksDataArray[node].Target >= target);
+                MaintainBySourceTree(0, root, LinksDataArray[node].Target >= target);
             }
         }
     }
@@ -425,7 +425,7 @@ void Links<T>::InsertLinkToTargetTree(T node) {
             else {
                 LinksIndexArray[root].LeftAsTarget = node;
                 LinksIndexArray[root].SizeAsTarget++;
-                MaintainByTargetTree(root, LinksDataArray[node].Source >= source);
+                MaintainByTargetTree(0, root, LinksDataArray[node].Source >= source);
             }
         }
         else {
@@ -469,7 +469,7 @@ void Links<T>::InsertLinkToTargetTree(T node) {
             else {
                 LinksIndexArray[root].RightAsTarget = node;
                 LinksIndexArray[root].SizeAsTarget++;
-                MaintainByTargetTree(root, LinksDataArray[node].Source >= source);
+                MaintainByTargetTree(0, root, LinksDataArray[node].Source >= source);
             }
         }
     }
