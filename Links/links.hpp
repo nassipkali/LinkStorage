@@ -275,8 +275,8 @@ void Links<T>::MaintainByTargetTree(T rootNode, T node, bool flag) {
 
 template <typename T>
 void Links<T>::InsertLinkToSourceTree(T node) {
-    T source = LinksDataArray[node];
-    T target = LinksDataArray[node];
+    T source = LinksDataArray[node].Source;
+    T target = LinksDataArray[node].Target;
     LinkIndex<T>* sourceIndexPtr = &LinksIndexArray[source];
     LinkIndex<T>* targetIndexPtr = &LinksIndexArray[target];
     if(!sourceIndexPtr->RootAsSource) {
@@ -376,8 +376,8 @@ void Links<T>::InsertLinkToSourceTree(T node) {
 
 template <typename T>
 void Links<T>::InsertLinkToTargetTree(T node) {
-    T source = LinksDataArray[node];
-    T target = LinksDataArray[node];
+    T source = LinksDataArray[node].Source;
+    T target = LinksDataArray[node].Target;
     LinkIndex<T>* sourceIndexPtr = &LinksIndexArray[source];
     LinkIndex<T>* targetIndexPtr = &LinksIndexArray[target];
     if(!targetIndexPtr->RootAsTarget) {
