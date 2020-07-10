@@ -65,26 +65,26 @@ Links<T>::Links(const char* dataFile, const char* indexFile, size_t blocksize) {
 
 template <typename T>
 T Links<T>::CreateLink(T source, T target) {
-    T index;
+    T link;
     if(FreeLinks > 0) {
-        index = LastFreeLink;
+        link = LastFreeLink;
         LastFreeLink = LinksDataArray[LastFreeLink].Source;
         FreeLinks--;
     }
     else {
-        index = AllocatedLinks;
+        link = AllocatedLinks;
         AllocatedLinks++;
     }
-    LinksDataArray[index].Source = source;
-    LinksDataArray[index].Target = target;
-    LinksIndexArray[index].RootAsSource = 0;
-    LinksIndexArray[index].LeftAsSource = 0;
-    LinksIndexArray[index].RightAsSource = 0;
-    LinksIndexArray[index].SizeAsSource = 1;
-    LinksIndexArray[index].RootAsTarget = 0;
-    LinksIndexArray[index].LeftAsTarget = 0;
-    LinksIndexArray[index].RightAsTarget = 0;
-    LinksIndexArray[index].SizeAsTarget = 1;
+    LinksDataArray[link].Source = source;
+    LinksDataArray[link].Target = target;
+    LinksIndexArray[link].RootAsSource = 0;
+    LinksIndexArray[link].LeftAsSource = 0;
+    LinksIndexArray[link].RightAsSource = 0;
+    LinksIndexArray[link].SizeAsSource = 1;
+    LinksIndexArray[link].RootAsTarget = 0;
+    LinksIndexArray[link].LeftAsTarget = 0;
+    LinksIndexArray[link].RightAsTarget = 0;
+    LinksIndexArray[link].SizeAsTarget = 1;
     InsertLinkToSourceTree(link);
     InsertLinkToTargetTree(link);
     return index;
