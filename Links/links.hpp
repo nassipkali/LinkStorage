@@ -148,8 +148,9 @@ void Links<T>::LeftRotateBySourceTree(T rootNode, T pNode) {
 
 template <typename T>
 void Links<T>::RightRotateBySourceTree(T rootNode, T qNode) {
+    T pNode = LinksIndexArray[qNode].LeftAsSource;
     LinkIndex<T> *qNodePtr = &LinksIndexArray[qNode];
-    LinkIndex<T> *pNodePtr = &LinksIndexArray[qNodePtr->LeftAsSource];
+    LinkIndex<T> *pNodePtr = &LinksIndexArray[pNode];
     qNodePtr->LeftAsSource = pNodePtr->RightAsSource;
     pNodePtr->RightAsSource = qNode;
     pNodePtr->SizeAsSource = qNodePtr->SizeAsSource;
@@ -164,8 +165,9 @@ void Links<T>::RightRotateBySourceTree(T rootNode, T qNode) {
 
 template <typename T>
 void Links<T>::LeftRotateByTargetTree(T rootNode, T pNode) {
+    T qNode = LinksIndexArray[pNode].RightAsTarget;
     LinkIndex<T> *pNodePtr = &LinksIndexArray[pNode];
-    LinkIndex<T> *qNodePtr = &LinksIndexArray[pNodePtr->RightAsTarget];
+    LinkIndex<T> *qNodePtr = &LinksIndexArray[qNode];
     pNodePtr->RightAsTarget = qNodePtr->LeftAsTarget;
     qNodePtr->LeftAsTarget = pNode;
     qNodePtr->SizeAsTarget = pNodePtr->SizeAsTarget;
@@ -180,8 +182,9 @@ void Links<T>::LeftRotateByTargetTree(T rootNode, T pNode) {
 
 template <typename T>
 void Links<T>::RightRotateByTargetTree(T rootNode, T qNode) {
+    T pNode = LinksIndexArray[qNode].LeftAsTarget;
     LinkIndex<T> *qNodePtr = &LinksIndexArray[qNode];
-    LinkIndex<T> *pNodePtr = &LinksIndexArray[qNodePtr->LeftAsTarget];
+    LinkIndex<T> *pNodePtr = &LinksIndexArray[pNode];
     qNodePtr->LeftAsTarget = pNodePtr->RightAsTarget;
     pNodePtr->RightAsTarget = qNode;
     pNodePtr->SizeAsTarget = qNodePtr->SizeAsTarget;
