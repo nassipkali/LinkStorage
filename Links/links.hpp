@@ -85,8 +85,8 @@ T Links<T>::CreateLink(T source, T target) {
     LinksIndexArray[index].LeftAsTarget = 0;
     LinksIndexArray[index].RightAsTarget = 0;
     LinksIndexArray[index].SizeAsTarget = 1;
-    //InsertLinkToSourceTree(link);
-    //InsertLinkToTargetTree(link);
+    InsertLinkToSourceTree(link);
+    InsertLinkToTargetTree(link);
     return index;
 }
 
