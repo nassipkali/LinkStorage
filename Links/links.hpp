@@ -147,58 +147,67 @@ void Links<T>::LeftRotateBySourceTree(T rootNode, T pNode) {
 }
 
 template <typename T>
-void Links<T>::RightRotateBySourceTree(T qNode) {
+void Links<T>::RightRotateBySourceTree(T rootNode, T qNode) {
     LinkIndex<T> *qNodePtr = &LinksIndexArray[qNode];
     LinkIndex<T> *pNodePtr = &LinksIndexArray[qNodePtr->LeftAsSource];
     qNodePtr->LeftAsSource = pNodePtr->RightAsSource;
     pNodePtr->RightAsSource = qNode;
     pNodePtr->SizeAsSource = qNodePtr->SizeAsSource;
     qNodePtr->SizeAsSource = LinksIndexArray[qNodePtr->LeftAsSource].SizeAsSource + LinksIndexArray[pNodePtr->RightAsSource].SizeAsSource + 1;
-    LinkIndex<T> temp = *qNodePtr;
-    *qNodePtr = *pNodePtr;
-    *pNodePtr = temp;
+    if(LinksIndexArray[rootNode].RightAsSource == pNode) {
+        LinksIndexArray[rootNode].RightAsSource = qNode;
+    }
+    else {
+        LinksIndexArray[rootNode].LeftAsSource = qNode;
+    }
 }
 
 template <typename T>
-void Links<T>::LeftRotateByTargetTree(T pNode) {
+void Links<T>::LeftRotateByTargetTree(T rootNode, T pNode) {
     LinkIndex<T> *pNodePtr = &LinksIndexArray[pNode];
     LinkIndex<T> *qNodePtr = &LinksIndexArray[pNodePtr->RightAsTarget];
     pNodePtr->RightAsTarget = qNodePtr->LeftAsTarget;
     qNodePtr->LeftAsTarget = pNode;
     qNodePtr->SizeAsTarget = pNodePtr->SizeAsTarget;
     pNodePtr->SizeAsTarget = LinksIndexArray[pNodePtr->LeftAsTarget].SizeAsTarget + LinksIndexArray[pNodePtr->RightAsTarget].SizeAsTarget + 1;
-    LinkIndex<T> temp = *pNodePtr;
-    *pNodePtr = *qNodePtr;
-    *qNodePtr = temp;
+    if(LinksIndexArray[rootNode].RightAsTarget == pNode) {
+        LinksIndexArray[rootNode].RightAsTarget = qNode;
+    }
+    else {
+        LinksIndexArray[rootNode].LeftAsTarget = qNode;
+    }
 }
 
 template <typename T>
-void Links<T>::RightRotateByTargetTree(T qNode) {
+void Links<T>::RightRotateByTargetTree(T rootNode, T qNode) {
     LinkIndex<T> *qNodePtr = &LinksIndexArray[qNode];
     LinkIndex<T> *pNodePtr = &LinksIndexArray[qNodePtr->LeftAsTarget];
     qNodePtr->LeftAsTarget = pNodePtr->RightAsTarget;
     pNodePtr->RightAsTarget = qNode;
     pNodePtr->SizeAsTarget = qNodePtr->SizeAsTarget;
     qNodePtr->SizeAsTarget = LinksIndexArray[qNodePtr->LeftAsTarget].SizeAsTarget + LinksIndexArray[pNodePtr->RightAsTarget].SizeAsTarget + 1;
-    LinkIndex<T> temp = *qNodePtr;
-    *qNodePtr = *pNodePtr;
-    *pNodePtr = temp;
+    if(LinksIndexArray[rootNode].RightAsTarget == pNode) {
+        LinksIndexArray[rootNode].RightAsTarget = qNode;
+    }
+    else {
+        LinksIndexArray[rootNode].LeftAsTarget = qNode;
+    }
 }
 
 template <typename T>
-void Links<T>::MaintainBySourceTree(T node, bool flag) {
+void Links<T>::MaintainBySourceTree(T rootNode, T node, bool flag) {
     LinkIndex<T>* nodePtr = &LinksIndexArray[node];
     LinkIndex<T>* nodeLeftPtr = &LinksIndexArray[nodePtr->LeftAsSource];
     LinkIndex<T>* nodeRightPtr = &LinksIndexArray[nodePtr->RightAsSource];
     if(flag) {
         if(nodeLeftPtr->SizeAsSource < LinksIndexArray[nodeRightPtr->LeftAsSource].SizeAsSource) {
             //case 1
-            RightRotateBySourceTree(nodePtr->RightAsSource);
-            LeftRotateBySourceTree(node);
+            RightRotateBySourceTree(node, nodePtr->RightAsSource);
+            LeftRotateBySourceTree(rootNode, node);
         }
         else if(nodeLeftPtr->SizeAsSource < LinksIndexArray[nodeRightPtr->RightAsSource].SizeAsSource) {
             //case 2
-            LeftRotateBySourceTree(node);
+            LeftRotateBySourceTree(rootNode, node);
         }
         else {
             return;
@@ -207,20 +216,20 @@ void Links<T>::MaintainBySourceTree(T node, bool flag) {
     else {
         if(nodeRightPtr->SizeAsSource < LinksIndexArray[nodeLeftPtr->RightAsSource].SizeAsSource) {
             //case 1'
-            LeftRotateBySourceTree(nodePtr->LeftAsSource);
-            RightRotateBySourceTree(node);
+            LeftRotateBySourceTree(node, nodePtr->LeftAsSource);
+            RightRotateBySourceTree(rootNode, node);
         }
         else if(nodeRightPtr->SizeAsSource < LinksIndexArray[nodeLeftPtr->LeftAsSource].SizeAsSource) {
-            RightRotateBySourceTree(node);
+            RightRotateBySourceTree(rootNode, node);
         }
         else {
             return;
         }
     }
-    MaintainBySourceTree(nodePtr->LeftAsSource, false);
-    MaintainBySourceTree(nodePtr->RightAsSource, true);
-    MaintainBySourceTree(node, true);
-    MaintainBySourceTree(node, false);
+    MaintainBySourceTree(node, nodePtr->LeftAsSource, false);
+    MaintainBySourceTree(node, nodePtr->RightAsSource, true);
+    MaintainBySourceTree(rootNode, node, true);
+    MaintainBySourceTree(rootNode, node, false);
 }
 
 template <typename T>
