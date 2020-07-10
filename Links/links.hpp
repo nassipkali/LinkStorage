@@ -138,6 +138,9 @@ void Links<T>::LeftRotateBySourceTree(T rootNode, T pNode) {
     qNodePtr->LeftAsSource = pNode;
     qNodePtr->SizeAsSource = pNodePtr->SizeAsSource;
     pNodePtr->SizeAsSource = LinksIndexArray[pNodePtr->LeftAsSource].SizeAsSource + LinksIndexArray[pNodePtr->RightAsSource].SizeAsSource + 1;
+    if(!rootNode) {
+        return;
+    }
     if(LinksIndexArray[rootNode].RightAsSource == pNode) {
         LinksIndexArray[rootNode].RightAsSource = qNode;
     }
@@ -155,6 +158,9 @@ void Links<T>::RightRotateBySourceTree(T rootNode, T qNode) {
     pNodePtr->RightAsSource = qNode;
     pNodePtr->SizeAsSource = qNodePtr->SizeAsSource;
     qNodePtr->SizeAsSource = LinksIndexArray[qNodePtr->LeftAsSource].SizeAsSource + LinksIndexArray[pNodePtr->RightAsSource].SizeAsSource + 1;
+    if(!rootNode) {
+        return;
+    }
     if(LinksIndexArray[rootNode].RightAsSource == pNode) {
         LinksIndexArray[rootNode].RightAsSource = qNode;
     }
@@ -172,6 +178,9 @@ void Links<T>::LeftRotateByTargetTree(T rootNode, T pNode) {
     qNodePtr->LeftAsTarget = pNode;
     qNodePtr->SizeAsTarget = pNodePtr->SizeAsTarget;
     pNodePtr->SizeAsTarget = LinksIndexArray[pNodePtr->LeftAsTarget].SizeAsTarget + LinksIndexArray[pNodePtr->RightAsTarget].SizeAsTarget + 1;
+    if(!rootNode) {
+        return;
+    }
     if(LinksIndexArray[rootNode].RightAsTarget == pNode) {
         LinksIndexArray[rootNode].RightAsTarget = qNode;
     }
@@ -189,6 +198,9 @@ void Links<T>::RightRotateByTargetTree(T rootNode, T qNode) {
     pNodePtr->RightAsTarget = qNode;
     pNodePtr->SizeAsTarget = qNodePtr->SizeAsTarget;
     qNodePtr->SizeAsTarget = LinksIndexArray[qNodePtr->LeftAsTarget].SizeAsTarget + LinksIndexArray[pNodePtr->RightAsTarget].SizeAsTarget + 1;
+    if(!rootNode) {
+        return;
+    }
     if(LinksIndexArray[rootNode].RightAsTarget == pNode) {
         LinksIndexArray[rootNode].RightAsTarget = qNode;
     }
