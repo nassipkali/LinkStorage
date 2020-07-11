@@ -289,7 +289,7 @@ template <typename T>
 void Links<T>::InsertLinkToSourceTree(T node) {
     T source = LinksDataArray[node].Source;
     T target = LinksDataArray[node].Target;
-    T root = LinksIndexArray[node].RootAsSource;
+    T root = LinksIndexArray[source].RootAsSource;
     LinkIndex<T>* sourceIndexPtr = &LinksIndexArray[source];
     LinkIndex<T>* targetIndexPtr = &LinksIndexArray[target];
     if(!root) {
@@ -308,6 +308,7 @@ void Links<T>::InsertLinkToSourceTree(T node) {
                 continue;
             }
             else {
+                LinksIndexArray[currentLink].SizeAsSource++;
                 nodes.push(currentLink);
                 LinksIndexArray[currentLink].LeftAsSource = node;
                 break;
@@ -321,26 +322,28 @@ void Links<T>::InsertLinkToSourceTree(T node) {
                 continue;
             }
             else {
+                LinksIndexArray[currentLink].SizeAsSource++;
                 nodes.push(currentLink);
                 LinksIndexArray[currentLink].RightAsSource = node;
                 break;
             }
         }
     }
+    /*
     while(nodes.size != 1) {
         T node = nodes.top();
         nodes.pop();
         T rNode = nodes.top();
         nodes.pop();
         MaintainBySourceTree(nodes.top(), rNode, LinksDataArray[node].Target >= LinksDataArray[nodes.top()].Target);
-    }
+    }*/
 }
 
 template <typename T>
 void Links<T>::InsertLinkToTargetTree(T node) {
     T source = LinksDataArray[node].Source;
     T target = LinksDataArray[node].Target;
-    T root = LinksIndexArray[node].RootAsTarget;
+    T root = LinksIndexArray[target].RootAsTarget;
     LinkIndex<T>* sourceIndexPtr = &LinksIndexArray[source];
     LinkIndex<T>* targetIndexPtr = &LinksIndexArray[target];
     if(!root) {
@@ -359,6 +362,7 @@ void Links<T>::InsertLinkToTargetTree(T node) {
                 continue;
             }
             else {
+                LinksIndexArray[currentLink].SizeAsTarget++;
                 nodes.push(currentLink);
                 LinksIndexArray[currentLink].LeftAsTarget = node;
                 break;
@@ -372,19 +376,21 @@ void Links<T>::InsertLinkToTargetTree(T node) {
                 continue;
             }
             else {
+                LinksIndexArray[currentLink].SizeAsTarget++;
                 nodes.push(currentLink);
                 LinksIndexArray[currentLink].RightAsTarget = node;
                 break;
             }
         }
     }
+    /*
     while(nodes.size != 1) {
         T node = nodes.top();
         nodes.pop();
         T rNode = nodes.top();
         nodes.pop();
         MaintainBySourceTree(nodes.top(), rNode, LinksDataArray[node].Source >= LinksDataArray[nodes.top()].Source);
-    }
+    }*/
 }
 
 /*END*/
