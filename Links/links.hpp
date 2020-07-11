@@ -347,8 +347,8 @@ void Links<T>::InsertLinkToTargetTree(T node) {
     LinkIndex<T>* sourceIndexPtr = &LinksIndexArray[source];
     LinkIndex<T>* targetIndexPtr = &LinksIndexArray[target];
     if(!root) {
-        sourceIndexPtr->RootAsTarget = node;
-        sourceIndexPtr->SizeAsTarget = 1;
+        targetIndexPtr->RootAsTarget = node;
+        targetIndexPtr->SizeAsTarget = 1;
         return;
     }
     T currentLink = root;
