@@ -4,7 +4,7 @@
 #include "linkindex.hpp"
 #include "linksmemory.hpp"
 #include <stack>
-
+#include <iostream>
 template <typename T>
 class Links
 {
@@ -66,6 +66,9 @@ Links<T>::Links(const char* dataFile, const char* indexFile, size_t blocksize) {
 
 template <typename T>
 T Links<T>::CreateLink(T source, T target) {
+    if(source == 0 || target == 0) {
+        std::cerr << "[LinksPlatform] Can't create link with reference to zero" << std::endl;
+    }
     T link;
     if(FreeLinks > 0) {
         link = LastFreeLink;
@@ -110,19 +113,45 @@ void Links<T>::UpdateLink (T link, T source, T target ) {
 
 
 template <typename T>
-void Links<T>::Delete(T index) {
-    if(FreeLinks) {
-        FreeLinks++;
-        LinksDataArray[LastFreeLink].Target = index;
-        LinksDataArray[index].Source = LastFreeLink;
-        LastFreeLink = index;
+void Links<T>::Delete(T link) {
+    LinkIndex<T>* index = &LinksIndexArray[link];
+    T rootAsSource = index->RootAsSource;
+    T rootAsTarget = index->RootAsTarget;
+    if(rootAsSource == 0 &&
+       (rootAsTarget == 0 ||
+        (LinksIndexArray[rootAsTarget].RootAsTarget == link && LinksIndexArray[rootAsTarget].SizeAsTarget == 1))) {
+        if(FreeLinks) {
+            FreeLinks++;
+            LinksDataArray[LastFreeLink].Target = link;
+            LinksDataArray[link].Source = LastFreeLink;
+            LastFreeLink = link;
+        }
+        else {
+            FreeLinks++;
+            FirstFreeLink = link;
+            LastFreeLink = link;
+        }
+    }
+    else if(rootAsTarget == 0 &&
+            (rootAsSource == 0 ||
+             (LinksIndexArray[rootAsSource].RootAsSource == link && LinksIndexArray[rootAsSource].SizeAsSource == 1))) {
+        if(FreeLinks) {
+            FreeLinks++;
+            LinksDataArray[LastFreeLink].Target = link;
+            LinksDataArray[link].Source = LastFreeLink;
+            LastFreeLink = link;
+        }
+        else {
+            FreeLinks++;
+            FirstFreeLink = link;
+            LastFreeLink = link;
+        }
     }
     else {
-        FreeLinks++;
-        FirstFreeLink = index;
-        LastFreeLink = index;
+        std::cout << "[LinksPlatform] Can't Delete link" << std::endl;
     }
 }
+
 
 
 
