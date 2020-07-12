@@ -36,8 +36,8 @@ class Links
         LinkIndex<T> GetLinkIndex(T link);
         void UpdateLink(T linkindex, T source, T target);
         void Delete(T index);
-        T SearchLinkBySource(T Source, T Target);
-        T SearchLinkByTarget(T Source, T Target);
+        T SearchLinkBySource(T source, T target);
+        T SearchLinkByTarget(T source, T target);
         T GetAllocatedLinksCount();
         T GetReservedLinksCount();
         T GetFreeLinksCount();
@@ -424,6 +424,64 @@ void Links<T>::InsertLinkToTargetTree(T node) {
         }
     }
 }
+
+template <typename T>
+T Links<T>::SearchLinkBySource(T source, T target) {
+    T currentLink = LinksIndexArray[source].RootAsSource;
+    while(true) {
+        if(LinksDataArray[currentLink].Target > target) {
+            if(LinksIndexArray[currentLink].LeftAsSource != 0) {
+                currentLink = LinksIndexArray[currentLink].LeftAsSource;
+                continue;
+            }
+            else {
+                return 0;
+            }
+        }
+        else if(LinksDataArray[currentLink].Target < target) {
+            if(LinksIndexArray[currentLink].RightAsSource != 0) {
+                currentLink = LinksIndexArray[currentLink].RightAsSource;
+                continue;
+            }
+            else {
+                return 0;
+            }
+        }
+        else {
+            return currentLink;
+        }
+    }
+}
+
+template <typename T>
+T Links<T>::SearchLinkByTarget(T source, T target) {
+    T currentLink = LinksIndexArray[target].RootAsTarget;
+    while(true) {
+        if(LinksDataArray[currentLink].Source > source) {
+            if(LinksIndexArray[currentLink].LeftAsTarget != 0) {
+                currentLink = LinksIndexArray[currentLink].LeftAsTarget;
+                continue;
+            }
+            else {
+                return 0;
+            }
+        }
+        else if(LinksDataArray[currentLink].Source < source) {
+            if(LinksIndexArray[currentLink].RightAsTarget != 0) {
+                currentLink = LinksIndexArray[currentLink].RightAsTarget;
+                continue;
+            }
+            else {
+                return 0;
+            }
+        }
+        else {
+            return currentLink;
+        }
+    }
+}
+
+
 
 /*END*/
 
