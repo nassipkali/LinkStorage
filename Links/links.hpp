@@ -68,6 +68,7 @@ template <typename T>
 T Links<T>::CreateLink(T source, T target) {
     if(source == 0 || target == 0) {
         std::cerr << "[LinksPlatform] Can't create link with reference to zero" << std::endl;
+        return 0;
     }
     T link;
     if(FreeLinks > 0) {
