@@ -38,6 +38,7 @@ class Links
         void Delete(T index);
         T SearchLinkBySource(T source, T target);
         T SearchLinkByTarget(T source, T target);
+        T SearchLink(T source, T target);
         T GetAllocatedLinksCount();
         T GetReservedLinksCount();
         T GetFreeLinksCount();
@@ -481,7 +482,19 @@ T Links<T>::SearchLinkByTarget(T source, T target) {
     }
 }
 
-
+template <typename T>
+T Links<T>::SearchLink(T source, T target) {
+    T rootAsSource = LinksIndexArray[source].RootAsSource;
+    T sizeAsSource = LinksIndexArray[rootAsSource].SizeAsSource;
+    T rootAsTarget = LinksIndexArray[target].RootAsTarget;
+    T sizeAsTarget = LinksIndexArray[rootAsTarget].SizeAsTarget;
+    if(sizeAsSource <= sizeAsTarget) {
+        return SearchLinkBySource(source, target);
+    }
+    else {
+        return SearchLinkByTarget(source, target);
+    }
+}
 
 /*END*/
 
