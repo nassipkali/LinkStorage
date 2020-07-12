@@ -297,6 +297,8 @@ void Links<T>::InsertLinkToSourceTree(T node) {
         sourceIndexPtr->SizeAsSource = 1;
         return;
     }
+    T rootLeft = LinksIndexArray[root].LeftAsSource;
+    T rootRight = LinksIndexArray[root].RightAsSource;
     T currentLink = root;
     std::stack<T> nodes;
     while(true) {
@@ -329,14 +331,28 @@ void Links<T>::InsertLinkToSourceTree(T node) {
             }
         }
     }
-    /*
-    while(nodes.size != 1) {
-        T node = nodes.top();
+    while(nodes.size() > 2) {
+        T lNode = nodes.top();
+        nodes.pop();
+        T hNode = nodes.top();
         nodes.pop();
         T rNode = nodes.top();
+        nodes.push(hNode);
+        MaintainBySourceTree(rNode, hNode, LinksDataArray[lNode].Target > LinksDataArray[hNode].Target);
+    }
+    if(nodes.size() == 2) {
+        T lNode = nodes.top();
         nodes.pop();
-        MaintainBySourceTree(nodes.top(), rNode, LinksDataArray[node].Target >= LinksDataArray[nodes.top()].Target);
-    }*/
+        T hNode = nodes.top();
+        nodes.pop();
+        MaintainBySourceTree(0, hNode, LinksDataArray[lNode].Target > LinksDataArray[hNode].Target);
+        if(LinksIndexArray[rootLeft].RightAsSource == root) {
+            LinksIndexArray[source].RootAsSource = rootLeft;
+        }
+        else if(LinksIndexArray[rootRight].LeftAsSource == root){
+            LinksIndexArray[source].RootAsSource = rootRight;
+        }
+    }
 }
 
 template <typename T>
@@ -351,6 +367,8 @@ void Links<T>::InsertLinkToTargetTree(T node) {
         targetIndexPtr->SizeAsTarget = 1;
         return;
     }
+    T rootLeft = LinksIndexArray[root].LeftAsSource;
+    T rootRight = LinksIndexArray[root].RightAsSource;
     T currentLink = root;
     std::stack<T> nodes;
     while(true) {
@@ -383,14 +401,28 @@ void Links<T>::InsertLinkToTargetTree(T node) {
             }
         }
     }
-    /*
-    while(nodes.size != 1) {
-        T node = nodes.top();
+    while(nodes.size() > 2) {
+        T lNode = nodes.top();
+        nodes.pop();
+        T hNode = nodes.top();
         nodes.pop();
         T rNode = nodes.top();
+        nodes.push(hNode);
+        MaintainByTargetTree(rNode, hNode, LinksDataArray[lNode].Source > LinksDataArray[hNode].Source);
+    }
+    if(nodes.size() == 2) {
+        T lNode = nodes.top();
         nodes.pop();
-        MaintainBySourceTree(nodes.top(), rNode, LinksDataArray[node].Source >= LinksDataArray[nodes.top()].Source);
-    }*/
+        T hNode = nodes.top();
+        nodes.pop();
+        MaintainByTargetTree(0, hNode, LinksDataArray[lNode].Source > LinksDataArray[hNode].Source);
+        if(LinksIndexArray[rootLeft].RightAsTarget == root) {
+            LinksIndexArray[target].RootAsTarget = rootLeft;
+        }
+        else if(LinksIndexArray[rootRight].LeftAsTarget == root){
+            LinksIndexArray[target].RootAsTarget = rootRight;
+        }
+    }
 }
 
 /*END*/
