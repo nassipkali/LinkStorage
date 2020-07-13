@@ -457,6 +457,37 @@ void Links<T>::InsertLinkToTargetTree(T node) {
 }
 
 template <typename T>
+void Links<T>::DeleteLinkFromSourceTree(T node) {
+    T source = LinksDataArray[node].Source;
+    T target = LinksDataArray[node].Target;
+    T currentLink = LinksIndexArray[source].RootAsSource;
+    std::stack<T> nodes;
+    while(true) {
+        if(LinksDataArray[currentLink].Target > target) {
+            LinksIndexArray[currentLink].SizeAsSource--;
+            nodes.push(currentLink);
+            currentLink = LinksIndexArray[currentLink].LeftAsSource;
+            continue;
+        }
+        else if(LinksDataArray[currentLink].Target < target) {
+            LinksIndexArray[currentLink].SizeAsSource--;
+            nodes.push(currentLink);
+            currentLink = LinksIndexArray[currentLink].RightAsSource;
+            continue;
+        }
+        else {
+            if(LinksIndexArray[nodes.top()].LeftAsSource == currentLink) {
+                LinksIndexArray[nodes.top()].RightAsSource = 0;
+            }
+            else {
+                LinksIndexArray[nodes.top()].LeftAsSource = 0;
+            }
+            break;
+        }
+    }
+}
+
+template <typename T>
 T Links<T>::SearchLinkBySource(T source, T target) {
     T currentLink = LinksIndexArray[source].RootAsSource;
     while(true) {
