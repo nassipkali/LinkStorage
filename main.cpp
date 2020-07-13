@@ -8,8 +8,9 @@ const char getlinkindex[] = "gli";
 const char linkcount[] = "lc";
 const char hlp[] = "help";
 const char del[] = "dl";
-//const char sist[] = "sist"; //Search in Source Tree
-//const char sitt[] = "sitt"; //Search in Target Tree
+const char searchBySrc[] = "sbs"; //Search in Source Tree
+const char searchByTrg[] = "sbt"; //Search in Target Tree
+const char searchLink[] = "sl";
 
 typedef size_t link_t;
 
@@ -22,10 +23,10 @@ int main(int argc, char* argv[]){
     while(1) {
         std::cin >> answer;
         if(strncmp(newlink, answer, sizeof(newlink)) == 0) {
-            link_t Source = 0, Target = 0;
-            std::cin >> Source >> Target;
-            link_t link = links.CreateLink(Source, Target);
-            std::cout << "Link Created: (" << Source << "," << Target << ") Index: " << link << std::endl;
+            link_t source, target;
+            std::cin >> source >> target;
+            link_t link = links.CreateLink(source, target);
+            std::cout << "Link Created: (" << source << "," << target << ") Index: " << link << std::endl;
         }
         else if(strncmp(hlp, answer, sizeof(hlp)) == 0) {
             printf("\t\t    nl (Source index) (Target Index)\n\
@@ -67,20 +68,24 @@ int main(int argc, char* argv[]){
             links.Delete(index);
             std::cout << "Free count: " << links.GetFreeLinksCount() << std::endl;
         }
-        /*
         else if(strncmp(searchBySrc, answer, sizeof(searchBySrc)) == 0) {
             link_t source, target;
             std::cin >> source >> target;
-            Link_t* link = links.SearchLinkBySource(source, target);
-            std::cout << "Link index: " << links.GetIndexByLink(link) << std::endl; 
+            link_t link = links.SearchLinkBySource(source, target);
+            std::cout << "Link index: " << link << std::endl;
         }
         else if(strncmp(searchByTrg, answer, sizeof(searchByTrg)) == 0) {
             link_t source, target;
             std::cin >> source >> target;
-            Link_t* link = links.SearchLinkByTarget(source, target);
-            std::cout << "Link index: " << links.GetIndexByLink(link) << std::endl;
+            link_t link = links.SearchLinkByTarget(source, target);
+            std::cout << "Link index: " << link << std::endl;
         }
-        */
+        else if(strncmp(searchLink, answer, sizeof(searchLink)) == 0) {
+            link_t source, target;
+            std::cin >> source >> target;
+            link_t link = links.SearchLink(source, target);
+            std::cout << "Link Index: " << link << std::endl;
+        }
         else if(strncmp(exitcmd, answer, sizeof(exitcmd)) == 0) {
             break;
         }
