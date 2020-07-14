@@ -35,7 +35,8 @@ class Links
         LinkData<T> GetLinkData(T link);
         LinkIndex<T> GetLinkIndex(T link);
         void UpdateLink(T linkindex, T source, T target);
-        void Delete(T index);
+        bool Delete(T index);
+        bool CascadeDelete(T index);
         T SearchLinkBySource(T source, T target);
         T SearchLinkByTarget(T source, T target);
         T SearchLink(T source, T target);
@@ -126,11 +127,13 @@ void Links<T>::Delete(T link) {
             LinksDataArray[LastFreeLink].Target = link;
             LinksDataArray[link].Source = LastFreeLink;
             LastFreeLink = link;
+            return true;
         }
         else {
             FreeLinks++;
             FirstFreeLink = link;
             LastFreeLink = link;
+            return true;
         }
     }
     else if(rootAsTarget == 0 &&
@@ -141,15 +144,17 @@ void Links<T>::Delete(T link) {
             LinksDataArray[LastFreeLink].Target = link;
             LinksDataArray[link].Source = LastFreeLink;
             LastFreeLink = link;
+            return true;
         }
         else {
             FreeLinks++;
             FirstFreeLink = link;
             LastFreeLink = link;
+            return true;
         }
     }
     else {
-        std::cout << "[LinksPlatform] Can't Delete link" << std::endl;
+        return false;
     }
 }
 
