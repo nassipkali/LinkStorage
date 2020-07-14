@@ -115,7 +115,7 @@ void Links<T>::UpdateLink (T link, T source, T target ) {
 
 
 template <typename T>
-void Links<T>::Delete(T link) {
+bool Links<T>::Delete(T link) {
     LinkIndex<T>* index = &LinksIndexArray[link];
     T rootAsSource = index->RootAsSource;
     T rootAsTarget = index->RootAsTarget;
