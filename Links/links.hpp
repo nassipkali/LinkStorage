@@ -466,29 +466,55 @@ void Links<T>::DeleteLinkFromSourceTree(T node) {
     T source = LinksDataArray[node].Source;
     T target = LinksDataArray[node].Target;
     T currentLink = LinksIndexArray[source].RootAsSource;
-    std::stack<T> nodes;
+    T rootOfDelete;
+    T previousLink;
+    bool leftOrRight;
     while(true) {
         if(LinksDataArray[currentLink].Target > target) {
             LinksIndexArray[currentLink].SizeAsSource--;
-            nodes.push(currentLink);
+            leftOrRight = false; // false - left
+            previousLink = currentLink;
             currentLink = LinksIndexArray[currentLink].LeftAsSource;
             continue;
         }
         else if(LinksDataArray[currentLink].Target < target) {
             LinksIndexArray[currentLink].SizeAsSource--;
-            nodes.push(currentLink);
+            leftOrRight = true; // true - right
+            previousLink = currentLink;
             currentLink = LinksIndexArray[currentLink].RightAsSource;
             continue;
         }
         else {
-            if(LinksIndexArray[nodes.top()].LeftAsSource == currentLink) {
-                LinksIndexArray[nodes.top()].RightAsSource = 0;
-            }
-            else {
-                LinksIndexArray[nodes.top()].LeftAsSource = 0;
-            }
+            rootOfDelete = previousLink;
             break;
         }
+    }
+    if(LinksIndexArray[currentLink].LeftAsSource == 0 && LinksIndexArray[currentLink].RightAsSource == 0) {
+        if(leftOrRight == false) {
+            LinksIndexArray[rootOfDelete].LeftAsSource = 0;
+        }
+        else {
+            LinksIndexArray[rootOfDelete].RightAsSource = 0;
+        }
+    }
+    else if(LinksIndexArray[currentLink].LeftAsSource == 0 && LinksIndexArray[currentLink].RightAsSource != 0) {
+        if(leftOrRight == false) {
+            LinksIndexArray[rootOfDelete].LeftAsSource = LinksIndexArray[currentLink].RightAsSource;;
+        }
+        else {
+            LinksIndexArray[rootOfDelete].RightAsSource = LinksIndexArray[currentLink].RightAsSource;
+        }
+    }
+    else if(LinksIndexArray[currentLink].LeftAsSource != 0 && LinksIndexArray[currentLink].RightAsSource == 0) {
+        if(leftOrRight == false) {
+            LinksIndexArray[rootOfDelete].LeftAsSource = LinksIndexArray[currentLink].LeftAsSource;;
+        }
+        else {
+            LinksIndexArray[rootOfDelete].RightAsSource = LinksIndexArray[currentLink].LeftAsSource;
+        }
+    }
+    else {
+       
     }
 }
 
