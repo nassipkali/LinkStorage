@@ -61,8 +61,6 @@ Links<T>::Links(const char* dataFile, const char* indexFile, size_t blocksize) {
     if(AllocatedLinks == 0) {
         AllocatedLinks = 1;
     }
-    int *bel = nullptr;
-
 }
 
 
