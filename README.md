@@ -1,5 +1,5 @@
 # LinksPlatform++
-![](./linksplatform.svg)
+![](./linksplatform.png)
 
 ```C++
 #include <iostream>
