@@ -514,7 +514,48 @@ void Links<T>::DeleteLinkFromSourceTree(T node) {
         }
     }
     else {
-       
+        T leftOfDelete = LinksIndexArray[currentLink].LeftAsSource;
+        T leftRightOfDelete = LinksIndexArray[leftOfDelete].RightAsSource;
+        if(leftRightOfDelete != 0) {
+            T replaceLink = 0;
+            //finding node for replace deleted node
+            while(!replaceLink) {
+
+            }
+        }
+        else {
+            T rightOfDelete = LinksIndexArray[currentLink].RightAsSource;
+            T rightLeftOfDelete = LinksIndexArray[rightOfDelete].LeftAsSource;
+            if(leftRightOfDelete != 0) {
+                T replaceLink;
+                //finding node for replace deleted node
+                while(!replaceLink) {
+
+                }
+            }
+            else {
+                if(LinksIndexArray[leftOfDelete].SizeAsSource <= LinksIndexArray[rightOfDelete].SizeAsSource) {
+                    if(leftOrRight == false) {
+                        LinksIndexArray[rootOfDelete].LeftAsSource = leftOfDelete;
+                        LinksIndexArray[leftOfDelete].RightAsSource = rightOfDelete;
+                    }
+                    else {
+                        LinksIndexArray[rootOfDelete].RightAsSource = leftOfDelete;
+                        LinksIndexArray[leftOfDelete].RightAsSource = rightOfDelete;
+                    }
+                }
+                else {
+                    if(leftOrRight == false) {
+                        LinksIndexArray[rootOfDelete].LeftAsSource = rightOfDelete;
+                        LinksIndexArray[rightOfDelete].LeftAsSource = leftOfDelete;
+                    }
+                    else {
+                        LinksIndexArray[rootOfDelete].RightAsSource = rightOfDelete;
+                        LinksIndexArray[rightOfDelete].LeftAsSource = leftOfDelete;
+                    }
+                }
+            }
+        }
     }
 }
 
