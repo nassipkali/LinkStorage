@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string.h>
 #include <unistd.h>
-#include "Links/links.hpp"
+#include "Links/linkstorage.hpp"
 const char exitcmd[] = "exit";
 const char newlink[] = "nl";
 const char newdot[] = "nd";
@@ -15,7 +15,7 @@ const char searchLink[] = "sl";
 typedef size_t link_t;
 
 int main(int argc, char* argv[]){
-    Links<link_t> links(argv[1], argv[2]);
+    LinkStorage<link_t> links(argv[1], argv[2]);
     char answer[50];
     while(1) {
         std::cin >> answer;
