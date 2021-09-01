@@ -16,7 +16,6 @@ int main()
     LinkData<link_t> linkData = links.GetLinkData(link);
     std::cout << "My first link! (" << linkData.Source<< " " << linkData.Target << ")\n";
     std::cout << "Link index" << link << std::endl;
-    links.Close();
     return 0;
 }
 ```
