@@ -1,4 +1,4 @@
-# LinksStorage
+# LinkStorage
 
 
 ```C++
