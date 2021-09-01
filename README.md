@@ -3,7 +3,7 @@
 
 ```C++
 #include <iostream>
-#include "Links/links.hpp"
+#include "Links/linkstorage.hpp"
 
 typedef size_t link_t;
 
