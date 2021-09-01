@@ -7,7 +7,7 @@
 #include <errno.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
-#include "linkdata.hpp"
+
 
 template <typename T>
 class MemoryMappedFileArray {
