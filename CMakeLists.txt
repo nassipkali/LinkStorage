@@ -7,6 +7,3 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(linkutil main.cpp)
 
-add_subdirectory(Links)
-
-target_link_libraries(linkutil Links)
