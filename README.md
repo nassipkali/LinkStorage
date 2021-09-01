@@ -3,13 +3,13 @@
 
 ```C++
 #include <iostream>
-#include "Links/links.hpp"
+#include "Links/linkstorage.hpp"
 
 typedef size_t link_t;
 
 int main()
 {
-    Links<size_t> links("db.links", "db.index");
+    LinkStorage<size_t> links("db.links", "db.index");
     std::cout << "Hello World!" << std::endl;
     link_t link = links.Create(1, 1);
     std::cout << "Link Count: " << links.GetLinksCount() << std::endl;
