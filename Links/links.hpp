@@ -56,7 +56,7 @@ Links<T>::Links(const char* data_file, const char* index_file) : data_array(data
 template <typename T>
 T Links<T>::CreateLink(T source, T target) {
     if(source == 0 || target == 0) {
-        std::cerr << "[LinksPlatform] Can't create link with reference to zero" << std::endl;
+        std::cerr << "[LinksStorage] Can't create link with reference to zero" << std::endl;
         return 0;
     }
     
@@ -106,7 +106,7 @@ T Links<T>::CreateDot() {
 template <typename T>
 void Links<T>::UpdateLink (T link, T source, T target ) {
 	if(source == 0 || target == 0) {
-        std::cerr << "[LinksPlatform] Can't create link with reference to zero" << std::endl;
+        std::cerr << "[LinksStorage] Can't create link with reference to zero" << std::endl;
         return;
     }
     this->data_array[link].source = source;
