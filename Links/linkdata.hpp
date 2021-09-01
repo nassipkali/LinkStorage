@@ -3,10 +3,11 @@
 
 
 template <typename T>
-class LinkData
+struct LinkData
 {
-    public:
-        T Source; // Индекс источника связи
-        T Target; // Индекс цели связи
+	T source; // Индекс источника связи
+	T target; // Индекс цели связи
 };
+
+
 #endif
