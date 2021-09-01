@@ -33,12 +33,10 @@ int main(int argc, char* argv[]){
         else if(strncmp(hlp, answer, sizeof(hlp)) == 0) {
             printf("\t\t    nl (Source index) (Target Index)\n\
                     Creates new link.\n\
-                    gl (Link Index)\n\
+                    gld (Link Index)\n\
                     Prints Link Source, Target\n\
                     lc\n\
                     Prints Link Count\n\
-                    mem\n\
-                    Prints Mapped Memory used/size\n");
         }
         else if(strncmp(getlinkdata, answer, sizeof(getlinkdata)) == 0) {
             link_t link;
