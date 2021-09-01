@@ -37,6 +37,7 @@ int main(int argc, char* argv[]){
                     Prints Link Source, Target\n\
                     lc\n\
                     Prints Link Count\n\
+                    "
         }
         else if(strncmp(getlinkdata, answer, sizeof(getlinkdata)) == 0) {
             link_t link;
