@@ -1,5 +1,5 @@
-# LinksPlatform++
-![](./linksplatform.png)
+# LinksStorage
+
 
 ```C++
 #include <iostream>
@@ -9,10 +9,10 @@ typedef size_t link_t;
 
 int main()
 {
-    Links<size_t> links("db.links");
+    Links<size_t> links("db.links", "db.index");
     std::cout << "Hello World!" << std::endl;
     link_t link = links.Create(1, 1);
-    std::cout << "Link Count: " << links.GetLinkCount() << std::endl;
+    std::cout << "Link Count: " << links.GetLinksCount() << std::endl;
     LinkData<link_t> linkData = links.GetLinkData(link);
     std::cout << "My first link! (" << linkData.Source<< " " << linkData.Target << ")\n";
     std::cout << "Link index" << link << std::endl;
