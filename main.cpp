@@ -68,13 +68,12 @@ int main(int argc, char* argv[]){
             links.Delete(index);
             std::cout << "Free count: " << links.GetFreeLinksCount() << std::endl;
         }
-        /*
         else if(strncmp(searchLink, answer, sizeof(searchLink)) == 0) {
             link_t source, target;
             std::cin >> source >> target;
             link_t link = links.SearchLink(source, target);
             std::cout << "Link Index: " << link << std::endl;
-        }*/
+        }
         else if(strncmp(exitcmd, answer, sizeof(exitcmd)) == 0) {
             break;
         }
