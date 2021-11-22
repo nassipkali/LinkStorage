@@ -5,8 +5,8 @@
 template <typename T>
 struct LinkData
 {
-	T source; // Индекс источника связи
-	T target; // Индекс цели связи
+    T source; // Индекс источника связи
+    T target; // Индекс цели связи
 };
 
 

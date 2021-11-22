@@ -26,7 +26,7 @@ class LinkStorage
         void UpdateLink(T linkindex, T source, T target);
         bool Delete(T index);
         T SearchLink(T source, T target);
-      	T GetSourcedCount(T link);
+          T GetSourcedCount(T link);
         T GetTargetedCount(T link);
         std::vector<T> GetSourced(T link);
         std::vector<T> GetTargeted(T link);
@@ -48,10 +48,10 @@ template <typename T>
 LinkStorage<T>::LinkStorage(const char* data_file, const char* index_file) : data_array(data_file), index_array(index_file) {
     // MetaData loads from 0 link
     if(this->data_array.GetSize() == 0) {
-    	LinkData<T> zero_data = {0,0};
-    	LinkIndex<T> zero_index = {0,0,0,0,0,0,0,0};
-    	this->data_array.Add(zero_data);
-    	this->index_array.Add(zero_index);
+        LinkData<T> zero_data = {0,0};
+        LinkIndex<T> zero_index = {0,0,0,0,0,0,0,0};
+        this->data_array.Add(zero_data);
+        this->index_array.Add(zero_index);
     }
     this->free_links = this->index_array[0].root_as_source; // Количество неиспользуемых/удаленных связей
     this->last_free_link = this->index_array[0].left_as_source; //Индекс последней удаленной связи
@@ -76,9 +76,9 @@ T LinkStorage<T>::CreateLink(T source, T target) {
         this->index_array[link] = {0,0,0,0,0,0,0,0};
     }
     else {
-    	link = data_array.GetSize();
-    	LinkData<T> link_data = {source, target};
-    	this->data_array.Add(link_data);
+        link = data_array.GetSize();
+        LinkData<T> link_data = {source, target};
+        this->data_array.Add(link_data);
         LinkIndex<T> link_index = {0,0,0,0,0,0,0,0};
         this->index_array.Add(link_index);
     }
@@ -102,9 +102,9 @@ T LinkStorage<T>::CreateDot() {
         
     }
     else {
-    	link = data_array.GetSize();
-    	LinkData<T> link_data = {link, link};
-    	this->data_array.Add(link_data);
+        link = data_array.GetSize();
+        LinkData<T> link_data = {link, link};
+        this->data_array.Add(link_data);
         LinkIndex<T> link_index = {0,0,0,0,0,0,0,0};
         this->index_array.Add(link_index);
     }
@@ -117,7 +117,7 @@ T LinkStorage<T>::CreateDot() {
 
 template <typename T>
 void LinkStorage<T>::UpdateLink (T link, T source, T target ) {
-	if(source == 0 || target == 0) {
+    if(source == 0 || target == 0) {
         std::cerr << "[LinkStorage] Can't create link with reference to zero" << std::endl;
         return;
     }
@@ -127,104 +127,104 @@ void LinkStorage<T>::UpdateLink (T link, T source, T target ) {
 
 template <typename T>
 bool LinkStorage<T>::Delete(T link) {
-	if(this->free_links == 0) {
-		this->last_free_link = link;
-		this->free_links++;
-	}
-	else {
-		this->data_array[this->last_free_link].target = link;
-		this->data_array[link].source = this->last_free_link;
-		this->last_free_link = link;
-		this->free_links++;
-	}
-	return true;
+    if(this->free_links == 0) {
+        this->last_free_link = link;
+        this->free_links++;
+    }
+    else {
+        this->data_array[this->last_free_link].target = link;
+        this->data_array[link].source = this->last_free_link;
+        this->last_free_link = link;
+        this->free_links++;
+    }
+    return true;
 }
 
 template <typename T>
 void LinkStorage<T>::InsertLinkToSourceTree(T link) {
-	LinkData<T> link_data = this->data_array[link];
-	T source = link_data.source;
-	T target = link_data.target;
-	T root = this->index_array[source].root_as_source;
-	T root_left = this->index_array[root].left_as_source;
+    LinkData<T> link_data = this->data_array[link];
+    T source = link_data.source;
+    T target = link_data.target;
+    T root = this->index_array[source].root_as_source;
+    T root_left = this->index_array[root].left_as_source;
     T root_right = this->index_array[root].right_as_source;
-	if(!root) {
-		this->index_array[source].root_as_source = link;
-		return;
-	}
-	T current_link = root;
-	while(true) {
-		if(this->data_array[current_link].target > target) {
-			if(this->index_array[current_link].left_as_source != 0) {
-				this->index_array[current_link].size_as_source++;
-				current_link = this->index_array[current_link].left_as_source;
-				continue;
-			}
-			else {
-				this->index_array[current_link].size_as_source++;
-				this->index_array[current_link].left_as_source = link;
-				break;
-			}
-		}
-		else {
-			if(this->index_array[current_link].right_as_source != 0) {
-				this->index_array[current_link].size_as_source++;
-				current_link = this->index_array[current_link].right_as_source;
-				continue;
-			}
-			else {
-				this->index_array[current_link].size_as_source++;
-				this->index_array[current_link].right_as_source = link;
-				break;
-			}
-		}
-	}
+    if(!root) {
+        this->index_array[source].root_as_source = link;
+        return;
+    }
+    T current_link = root;
+    while(true) {
+        if(this->data_array[current_link].target > target) {
+            if(this->index_array[current_link].left_as_source != 0) {
+                this->index_array[current_link].size_as_source++;
+                current_link = this->index_array[current_link].left_as_source;
+                continue;
+            }
+            else {
+                this->index_array[current_link].size_as_source++;
+                this->index_array[current_link].left_as_source = link;
+                break;
+            }
+        }
+        else {
+            if(this->index_array[current_link].right_as_source != 0) {
+                this->index_array[current_link].size_as_source++;
+                current_link = this->index_array[current_link].right_as_source;
+                continue;
+            }
+            else {
+                this->index_array[current_link].size_as_source++;
+                this->index_array[current_link].right_as_source = link;
+                break;
+            }
+        }
+    }
 }
 
 template <typename T>
 void LinkStorage<T>::InsertLinkToTargetTree(T link) {
-	LinkData<T> link_data = this->data_array[link];
-	T source = link_data.source;
-	T target = link_data.target;
-	T root = this->index_array[target].root_as_target;
-	T root_left = this->index_array[root].left_as_target;
+    LinkData<T> link_data = this->data_array[link];
+    T source = link_data.source;
+    T target = link_data.target;
+    T root = this->index_array[target].root_as_target;
+    T root_left = this->index_array[root].left_as_target;
     T root_right = this->index_array[root].right_as_target;
-	if(!root) {
-		this->index_array[source].root_as_target = link;
-		return;
-	}
-	T current_link = root;
-	while(true) {
-		if(this->data_array[current_link].source > source) {
-			if(this->index_array[current_link].left_as_target != 0) {
-				this->index_array[current_link].size_as_target++;
-				current_link = this->index_array[current_link].left_as_target;
-				continue;
-			}
-			else {
-				this->index_array[current_link].size_as_target++;
-				this->index_array[current_link].left_as_target = link;
-				break;
-			}
-		}
-		else {
-			if(this->index_array[current_link].right_as_target != 0) {
-				this->index_array[current_link].size_as_target++;
-				current_link = this->index_array[current_link].right_as_target;
-				continue;
-			}
-			else {
-				this->index_array[current_link].size_as_target++;
-				this->index_array[current_link].right_as_target = link;
-				break;
-			}
-		}
-	}
+    if(!root) {
+        this->index_array[source].root_as_target = link;
+        return;
+    }
+    T current_link = root;
+    while(true) {
+        if(this->data_array[current_link].source > source) {
+            if(this->index_array[current_link].left_as_target != 0) {
+                this->index_array[current_link].size_as_target++;
+                current_link = this->index_array[current_link].left_as_target;
+                continue;
+            }
+            else {
+                this->index_array[current_link].size_as_target++;
+                this->index_array[current_link].left_as_target = link;
+                break;
+            }
+        }
+        else {
+            if(this->index_array[current_link].right_as_target != 0) {
+                this->index_array[current_link].size_as_target++;
+                current_link = this->index_array[current_link].right_as_target;
+                continue;
+            }
+            else {
+                this->index_array[current_link].size_as_target++;
+                this->index_array[current_link].right_as_target = link;
+                break;
+            }
+        }
+    }
 }
 
 template <typename T>
 T LinkStorage<T>::SearchLinkInSourceTree(T source, T target) {
-	T current_link = this->index_array[source].root_as_source;
+    T current_link = this->index_array[source].root_as_source;
     while(true) {
         if(this->data_array[current_link].target > target) {
             if(this->index_array[current_link].left_as_source != 0) {
@@ -252,7 +252,7 @@ T LinkStorage<T>::SearchLinkInSourceTree(T source, T target) {
 
 template <typename T>
 T LinkStorage<T>::SearchLinkInTargetTree(T source, T target) {
-	T current_link = this->index_array[target].root_as_source;
+    T current_link = this->index_array[target].root_as_source;
     while(true) {
         if(this->data_array[current_link].source > source) {
             if(this->index_array[current_link].left_as_target != 0) {
@@ -280,7 +280,7 @@ T LinkStorage<T>::SearchLinkInTargetTree(T source, T target) {
 
 template <typename T>
 T LinkStorage<T>::SearchLink(T source, T target) {
-	T root_as_source = this->index_array[source].root_as_source;
+    T root_as_source = this->index_array[source].root_as_source;
     T size_as_source = this->index_array[root_as_source].size_as_source;
     T root_as_target = this->index_array[target].root_as_target;
     T size_as_target = this->index_array[root_as_target].size_as_target;
@@ -304,7 +304,7 @@ LinkIndex<T> LinkStorage<T>::GetLinkIndex(T link) {
 
 template <typename T>
 size_t LinkStorage<T>::GetLinksCount() {
-	return data_array.GetSize() - 1;
+    return data_array.GetSize() - 1;
 }
 
 
@@ -315,8 +315,8 @@ T LinkStorage<T>::GetFreeLinksCount() {
 
 template <typename T>
 LinkStorage<T>::~LinkStorage() {
-	this->index_array[0].root_as_source = this->free_links; // Количество неиспользуемых/удаленных связей
-	this->index_array[0].left_as_source = this->last_free_link; //Индекс последней удаленной связи
+    this->index_array[0].root_as_source = this->free_links; // Количество неиспользуемых/удаленных связей
+    this->index_array[0].left_as_source = this->last_free_link; //Индекс последней удаленной связи
 }
 
 
